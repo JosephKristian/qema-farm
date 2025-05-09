@@ -1,0 +1,578 @@
+import React, { useState, useReducer, useEffect, useRef } from 'react'
+import Modal from 'react-modal';
+import NavbarAdmin from '../../components/NavbarAdmin';
+import Sidebar from '../../components/Sidebar';
+import Loading from '../../components/Loading';
+import { goatReducer } from '../../config/Reducer';
+import { addNewGoat, editTheGoat, getAllGoat, removeGoat } from '../../functions/Database';
+import { saveGoatImage } from '../../functions/Storage';
+import { useNavigate } from 'react-router-dom';
+
+const Goat = () => {
+  const format = Intl.NumberFormat();
+  let index = 0;
+  const [state, dispatch] = useReducer(goatReducer, []);
+  const [visibleModal, setVisibleModal] = useState(false);
+  const [editGoatModal, setEditGoatModal] = useState(false);
+  const [addGoatModal, setAddGoatModal] = useState(false);
+  const [detailGoatModal, setDetailGoatModal] = useState(false);
+  const [deleteGoatModal, setDeleteGoatModal] = useState(false);
+  const [goatSelected, setGoatSelected] = useState(null);
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [search, setSearch] = useState('');
+  const [goatName, setGoatName] = useState('');
+  const [goatWeight, setGoatWeight] = useState(0);
+  const [goatTime, setGoatTime] = useState(0);
+  const [goatType, setGoatType] = useState('');
+  const [goatPrice, setGoatPrice] = useState(0);
+  const [goatSex, setGoatSex] = useState('');
+  const [goatImage, setGoatImage] = useState({});
+  const [loading, setLoading] = useState(false);
+  const imageRef = useRef();
+  const types = ['Dewasa', 'Muda', 'Cempe'];
+  const sex = ['Betina', 'Jantan'];
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem('role') != 'admin') {
+      navigate('/', { replace: true });
+    }
+    retrieveAllGoat();
+    return () => { }
+  }, [])
+
+  useEffect(() => {
+    setGoatName(prev => goatSelected === null ? '' : goatSelected.name);
+    setGoatWeight(prev => goatSelected === null ? 0 : goatSelected.weight);
+    setGoatTime(prev => goatSelected === null ? 0 : goatSelected.time);
+    setGoatType(prev => goatSelected === null ? '' : goatSelected.type);
+    setGoatSex(prev => goatSelected === null ? '' : goatSelected.sex);
+    setGoatPrice(prev => goatSelected === null ? 0 : goatSelected.price);
+    return () => { }
+  }, [goatSelected])
+
+  const showTheModal = (title, description) => {
+    setTitle(title);
+    setDescription(description);
+    setVisibleModal(true);
+  }
+
+  const resetForm = () => {
+    setGoatName('');
+    setGoatPrice(0);
+    setGoatWeight(0);
+    setGoatTime(0);
+    setGoatType('');
+    setGoatImage({});
+  }
+
+  const retrieveAllGoat = async () => {
+    try {
+      await getAllGoat().then(
+        (resolve) => {
+          dispatch({
+            type: 'retrieve_goat',
+            data: [...resolve],
+          });
+        },
+        (reject) => { throw reject; }
+      );
+    } catch (error) {
+      showTheModal('Terjadi Kesalahan!', error.toString());
+    }
+  }
+
+  const addGoat = async () => {
+    try {
+      if (validation()) {
+        setLoading(true);
+        const goatImageName = new Date().getTime();
+        await saveGoatImage(goatImageName, goatImage).then(
+          async (resolve) => {
+            const data = {
+              name: goatName,
+              type: goatType,
+              sex: goatSex,
+              weight: goatWeight,
+              time: goatTime,
+              price: parseInt(goatPrice),
+              image: resolve,
+              created_at: goatImageName,
+            };
+            await addNewGoat(data).then(
+              async (resolve) => {
+                await retrieveAllGoat();
+                setAddGoatModal(false);
+                resetForm();
+              },
+              (reject) => {
+                console.log(reject);
+                throw reject;
+              }
+            );
+          },
+          (reject) => {
+            console.log(reject);
+            throw reject;
+          }
+        );
+      } else {
+        throw 'Form harus diisi!';
+      }
+    } catch (error) {
+      showTheModal('Terjadi Kesalahan!', error.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const editGoat = async () => {
+    try {
+      if (validationForEdit()) {
+        setLoading(true);
+        await editTheGoat(goatSelected.uid, {
+          name: goatName,
+          price: parseInt(goatPrice),
+          sex: goatSex,
+          type: goatType,
+          time: goatTime,
+          weight: goatWeight,
+          image: goatSelected.image,
+          created_at: goatSelected.created_at,
+        }).then(
+          async (resolve) => {
+            await retrieveAllGoat();
+            setEditGoatModal(false);
+            resetForm();
+          },
+          (reject) => {
+            console.log(reject);
+            throw reject;
+          }
+        );
+      } else {
+        throw 'Form harus diisi!';
+      }
+    } catch (error) {
+      showTheModal('Terjadi Kesalahan!', error.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const validation = () => {
+    if (goatName.length < 1) {
+      return false;
+    } else if (goatPrice.length < 1 || parseInt(goatPrice) === 0) {
+      return false;
+    } else if (goatWeight.length < 1 || parseInt(goatWeight) === 0) {
+      return false;
+    } else if (goatTime.length < 1 || parseInt(goatTime) === 0) {
+      return false;
+    } else if (goatType.length < 1) {
+      return false;
+    } else if (goatSex.length < 1) {
+      return false;
+    } else if (goatImage.name === undefined || goatImage.name === null) {
+      return false;
+    }
+    return true;
+  }
+
+  const validationForEdit = () => {
+    if (goatName.length < 1) {
+      return false;
+    } else if (goatPrice.length < 1 || parseInt(goatPrice) === 0) {
+      return false;
+    } else if (goatWeight.length < 1 || parseInt(goatWeight) === 0) {
+      return false;
+    } else if (goatTime.length < 1 || parseInt(goatTime) === 0) {
+      return false;
+    } else if (goatType.length < 1) {
+      return false;
+    } else if (goatSex.length < 1) {
+      return false;
+    }
+    return true;
+  }
+
+  const deleteGoat = async () => {
+    try {
+      setLoading(true);
+      console.log(goatSelected);
+      await removeGoat(goatSelected.uid).then(
+        async (resolve) => {
+          await retrieveAllGoat();
+          setDeleteGoatModal(false);
+        },
+        (reject) => { throw reject; }
+      );
+    } catch (error) {
+      showTheModal('Terjadi Kesalahan!', error.toString());
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div>
+      {/* Navbar */}
+      <NavbarAdmin />
+
+      <div className='flex flex-row justify-start'>
+        {/* Sidebar */}
+        <Sidebar />
+
+        {/* Content */}
+        <div className='flex-1 flex flex-col items-center space-y-4 px-10 my-[90px] overflow-y-auto'>
+          <div className='w-full flex flex-row justify-between items-center'>
+            <button onClick={() => {
+              setAddGoatModal(true);
+              setGoatType(types[0]);
+              setGoatSex(sex[0]);
+            }} className='bg-[#145412] text-white font-medium text-lg rounded-md px-4 py-2'>Tambah</button>
+            <input type='text' defaultValue={search} onChange={(e) => setSearch(e.target.value)} placeholder='Cari Kambing' className='w-96 border border-gray-200 rounded-md self-end outline-none p-2' />
+          </div>
+          <div className='py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md'>
+            <table class="bg-white w-full table-fixed border-collapse bordertext-sm">
+              <thead>
+                <tr className='text-white text-lg'>
+                  <th className='bg-gray-600 border border-white py-4'>Kambing</th>
+                  <th className='bg-gray-600 border border-white py-4'>Jenis</th>
+                  <th className='bg-gray-600 border border-white py-4'>Berat per Waktu</th>
+                  <th className='bg-gray-600 border border-white py-4'>Jenis Kelamin</th>
+                  <th className='bg-gray-600 border border-white py-4'>Harga</th>
+                  <th className='bg-gray-600 border border-white py-4'>Aksi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {
+                  state.filter(e => e.name.toLowerCase().includes(search.toLowerCase().trim())).map(element => {
+                    index++;
+                    return (
+                      <tr key={element.uid} className={(index % 2) === 0 ? 'text-base font-medium bg-gray-100' : 'text-base font-medium'}>
+                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.name}</td>
+                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.type}</td>
+                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333]'>{element.weight} kg / {element.time} bulan</td>
+                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.sex}</td>
+                        <td className='border border-slate-200 overflow-auto p-2 text-[#EA341B] font-medium capitalize'>Rp. {element.price.toLocaleString().replaceAll(',', '.')}</td>
+                        <td className='flex flex-row space-x-4 overflow-auto p-2'>
+                          <button onClick={() => {
+                            setGoatSelected(element);
+                            setDetailGoatModal(true);
+                          }} className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2'>Detail</button>
+                          <button onClick={() => {
+                            setGoatSelected(element);
+                            setEditGoatModal(true);
+                          }} className='bg-[#145412] rounded-lg text-white px-4 py-2'>Ubah</button>
+                          <button onClick={() => {
+                            setGoatSelected(element);
+                            setDeleteGoatModal(true);
+                          }} className='bg-[#b31818] rounded-lg text-white px-4 py-2'>Hapus</button>
+                        </td>
+                      </tr>
+                    )
+                  })
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Add Goat Modal */}
+      <Modal
+        isOpen={addGoatModal}
+        onRequestClose={() => {
+          resetForm();
+          setAddGoatModal(false);
+        }}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+            maxHeight: '95vh',
+          },
+          overlay: {
+            color: '#00000000',
+            backgroundColor: '#000000CC',
+            zIndex: '20',
+          }
+        }} >
+
+        <div className='bg-transparent rounded-xl p-2 min-w-[420px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
+          {
+            goatImage.name === undefined || goatImage.name === null
+              ? (
+                <button onClick={() => imageRef.current.click()} className='flex items-center justify-center self-center rounded-lg w-[160px] h-[160px] mb-4 border border-gray-800 text-gray-800 text-lg font-medium'>
+                  Tambah Foto
+                </button>
+              )
+              : <img onClick={() => imageRef.current.click()} src={URL.createObjectURL(goatImage)} alt='/' className='self-center rounded-lg w-[160px] h-[160px] mb-4' />
+          }
+          <input type='file' ref={imageRef} multiple={false} onChange={(e) => {
+            console.log(URL.createObjectURL(e.target.files[0]));
+            if (e.target.files && e.target.files[0] && e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/jpg' || e.target.files[0].type === 'image/png') setGoatImage(e.target.files[0]);
+          }} className='hidden' />
+          {/* Name */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Nama</p>
+            <input type='text' defaultValue='' onChange={(e) => setGoatName(e.target.value)} placeholder='Nama Kambing' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          </div>
+          {/* Price */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Harga</p>
+            <input type='number' defaultValue='' onChange={(e) => setGoatPrice(e.target.value)} placeholder='Harga Kambing' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          </div>
+          {/* Sex */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis Kelamin</p>
+            <select defaultValue={sex[0]} onChange={(e) => setGoatSex(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {sex.map((element) =>
+              (
+                <option>
+                  {element}
+                </option>
+              )
+              )}
+            </select>
+          </div>
+          {/* Type */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <select defaultValue={types[0]} onChange={(e) => setGoatType(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {types.map((element) =>
+                (
+                  <option>
+                    {element}
+                  </option>
+                )
+              )}
+            </select>
+          </div>
+          {/* Weight and Time */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Berat per Waktu</p>
+            <div className='flex flex-row justify-between items-center space-x-2'>
+              <input type='number' defaultValue={0} onChange={(e) => setGoatWeight(e.target.value)} placeholder='Berat (kg)' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+              <p>kg</p>
+              <p>/</p>
+              <input type='number' defaultValue={0} onChange={(e) => setGoatTime(e.target.value)} placeholder='Waktu (bulan)' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+              <p>bulan</p>
+            </div>
+          </div>
+          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
+            <button className='border border-[#145412] px-4 py-2 rounded-lg text-[#145412] font-semibold text-base' onClick={() => {
+              resetForm();
+              setAddGoatModal(false);
+            }}>Batal</button>
+            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => addGoat()}>Tambah</button>
+          </div>
+        </div>
+
+      </Modal>
+
+      {/* Edit Goat Modal */}
+      <Modal
+        isOpen={editGoatModal}
+        onRequestClose={() => {
+          resetForm();
+          setEditGoatModal(false);
+        }}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+            maxHeight: '95vh',
+          },
+          overlay: {
+            color: '#00000000',
+            backgroundColor: '#000000CC',
+            zIndex: '20',
+          }
+        }} >
+
+        <div className='bg-transparent rounded-xl p-2 min-w-[420px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
+          {/* Name */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Nama</p>
+            <input type='text' defaultValue={goatSelected === null ? '' : goatSelected.name} onChange={(e) => setGoatName(e.target.value)} placeholder='Nama Kambing' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          </div>
+          {/* Price */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Harga</p>
+            <input type='number' defaultValue={goatSelected === null ? '' : goatSelected.price} onChange={(e) => setGoatPrice(e.target.value)} placeholder='Harga Kambing' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          </div>
+          {/* Sex */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis Kelamin</p>
+            <select defaultValue={goatSelected === null ? '' : goatSelected.sex} onChange={(e) => setGoatSex(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {sex.map((element) =>
+              (
+                <option>
+                  {element}
+                </option>
+              )
+              )}
+            </select>
+          </div>
+          {/* Type */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <select defaultValue={goatSelected === null ? '' : goatSelected.type} onChange={(e) => setGoatType(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {types.map((element) =>
+              (
+                <option>
+                  {element}
+                </option>
+              )
+              )}
+            </select>
+          </div>
+          {/* Weight and Time */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Berat per Waktu</p>
+            <div className='flex flex-row justify-between items-center space-x-2'>
+              <input type='number' defaultValue={goatSelected === null ? '' : goatSelected.weight} onChange={(e) => setGoatWeight(e.target.value)} placeholder='Berat (kg)' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+              <p>kg</p>
+              <p>/</p>
+              <input type='number' defaultValue={goatSelected === null ? '' : goatSelected.time} onChange={(e) => setGoatTime(e.target.value)} placeholder='Waktu (bulan)' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+              <p>bulan</p>
+            </div>
+          </div>
+          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
+            <button className='border border-[#145412] px-4 py-2 rounded-lg text-[#145412] font-semibold text-base' onClick={() => {
+              resetForm();
+              setEditGoatModal(false);
+            }}>Batal</button>
+            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => editGoat()}>Ubah</button>
+          </div>
+        </div>
+
+      </Modal>
+
+      {/* Detail Goat Modal */}
+      <Modal
+        isOpen={detailGoatModal}
+        onRequestClose={() => {
+          resetForm();
+          setDetailGoatModal(false);
+        }}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+            maxHeight: '95vh',
+          },
+          overlay: {
+            color: '#00000000',
+            backgroundColor: '#000000CC',
+            zIndex: '20'
+          }
+        }} >
+
+        <div className='bg-transparent rounded-xl p-2 min-w-[420px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
+          <img src={goatSelected === null ? '' : goatSelected.image} alt='/' className='self-center rounded-lg w-[160px] h-[160px] mb-4' />
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Nama Kambing</p>
+            <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.name}</p>
+          </div>
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.type}</p>
+          </div>
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Berat per Waktu</p>
+            <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.weight} kg / {goatSelected === null ? '' : goatSelected.time} Bulan</p>
+          </div>
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis Kelamin</p>
+            <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.sex}</p>
+          </div>
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Harga</p>
+            <p className='w-full border border-gray-200 rounded-md text-[#EA341B] font-medium p-2'>Rp. {goatSelected === null ? 0 : format.format(goatSelected.price).replaceAll(',', '.')}</p>
+          </div>
+          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
+            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setDetailGoatModal(false)}>Oke, Siap</button>
+          </div>
+        </div>
+
+      </Modal>
+
+      {/* Delete Modal */}
+      <Modal
+        isOpen={deleteGoatModal}
+        onRequestClose={() => setDeleteGoatModal(false)}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+          },
+          overlay: {
+            color: '#00000000',
+            backgroundColor: '#000000CC',
+            zIndex: '10',
+          }
+        }} >
+
+        <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
+          <h1 className='text-xl font-bold text-[#333333] '>Konfirmasi</h1>
+          <p className='flex-1 text-base font-medium text-[#b31818]'>Apakah anda yakin ingin menghapus <span className='font-bold'>{goatSelected === null ? '' : goatSelected.name}</span>?</p>
+          <div className='flex flex-row justify-end items-center space-x-4'>
+            <button className='border border-[#b31818] px-4 py-2 rounded-lg text-[#b31818] font-semibold text-base' onClick={() => setDeleteGoatModal(false)}>Batal</button>
+            <button className='bg-[#b31818] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => deleteGoat()}>Hapus</button>
+          </div>
+        </div>
+
+      </Modal>
+
+      {/* Loading */}
+      <Loading show={loading} />
+
+      {/* Dialog Modal */}
+      <Modal
+        isOpen={visibleModal}
+        onRequestClose={() => setVisibleModal(false)}
+        style={{
+          content: {
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            transform: 'translate(-50%, -50%)',
+          },
+          overlay: {
+            color: '#00000000',
+            backgroundColor: '#000000CC',
+            zIndex: '100',
+          }
+        }} >
+
+        <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
+          <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
+          <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
+          <div className='flex flex-row justify-end items-center space-x-4'>
+            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
+          </div>
+        </div>
+
+      </Modal>
+    </div>
+  );
+}
+
+export default Goat;
