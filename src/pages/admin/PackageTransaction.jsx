@@ -79,38 +79,55 @@ const PackageTransaction = () => {
         <Sidebar />
 
         {/* Content */}
-        <div className='flex-1 flex flex-col items-center space-y-4 px-10 my-[90px] overflow-y-auto'>
-          <div className='py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md'>
-            <table class="bg-white w-full table-fixed border-collapse bordertext-sm">
+        <div className='flex-1 flex flex-col items-center space-y-4 px-4 sm:px-6 md:px-10 my-[90px] overflow-y-auto'>
+          <div className='w-full py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md overflow-x-auto'>
+            <table className="bg-white w-full min-w-[800px] table-fixed border-collapse border text-sm">
               <thead>
-                <tr className='text-white text-lg'>
-                  <th className='bg-gray-600 border border-white py-4'>No. Paket</th>
-                  <th className='bg-gray-600 border border-white py-4'>Paket</th>
-                  <th className='bg-gray-600 border border-white py-4'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4'>Status</th>
-                  <th className='bg-gray-600 border border-white py-4'>Aksi</th>
+                <tr className='text-white text-xs sm:text-sm md:text-base'>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>No. Paket</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Paket</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Harga</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Status</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  state.map(element => {
-                    index++;
-                    return (
-                      <tr key={element.uid} className={(index % 2) === 0 ? 'text-base font-medium bg-gray-100' : 'text-base font-medium'}>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333]'>{element.key}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.name}</td>
-                        <td className='flex flex-row justify-start space-x-2 border border-slate-200 overflow-auto p-2 text-[#EA341B] capitalize'>Rp. <span className={element.discount_price != null ? 'line-through text-[#333333] font-normal' : 'text-[#EA341B] text-sm font-medium'}>{format.format(element.price).replaceAll(',', '.')}</span> <span className='text-[#EA341B] text-base font-semibold'>{element.discount_price != null ? format.format(element.discount_price).replaceAll(',', '.') : ''}</span></td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.confirmed ? 'Dikonfirmasi' : 'Belum Dikonfirmasi'}</td>
-                        <td className='flex flex-row space-x-4 overflow-auto p-2'>
-                          <button onClick={() => {
-                            console.log(element);
-                            getUser(element.user);
-                            setPackageSelected(element);
-                          }} className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2'>Detail</button>
-                        </td>
-                      </tr>
-                    )
-                  })
+                  state.map((element, index) => (
+                    <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
+                      <td className='border border-slate-200 p-2 text-[#333333]'>{element.key}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#EA341B] capitalize'>
+                        <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-2'>
+                          <span className={element.discount_price != null ? 'line-through text-[#333333] font-normal' : 'text-[#EA341B] text-sm font-medium'}>
+                            Rp. {format.format(element.price).replaceAll(',', '.')}
+                          </span>
+                          {element.discount_price != null && (
+                            <span className='text-[#EA341B] text-base font-semibold'>
+                              {format.format(element.discount_price).replaceAll(',', '.')}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
+                        {element.confirmed ? 'Dikonfirmasi' : 'Belum Dikonfirmasi'}
+                      </td>
+                      <td className='border border-slate-200 p-2'>
+                        <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
+                          <button
+                            onClick={() => {
+                              console.log(element);
+                              getUser(element.user);
+                              setPackageSelected(element);
+                            }}
+                            className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 text-xs sm:text-sm'
+                          >
+                            Detail
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 }
               </tbody>
             </table>

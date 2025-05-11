@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import Loading from '../../components/Loading';
@@ -20,7 +20,7 @@ const Confirmation = () => {
       navigate('/', { replace: true });
     }
     retrieveTransaction();
-    return () => {}
+    return () => { }
   }, [])
 
   const showTheModal = (title, description) => {
@@ -69,52 +69,77 @@ const Confirmation = () => {
   }
 
   return (
-    <div>
-
+    <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <Navbar />
 
-      <div className='flex justify-center items-center'>
-        <div className='bg-transparent rounded-xl p-2 min-w-[420px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Nama Konsumen</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{userData === null ? '' : userData.name}</p>
+      <div className="container mx-auto px-4 py-6">
+        <div className="bg-white rounded-xl p-4 w-full max-w-xl mx-auto text-black flex flex-col space-y-4 shadow-md">
+          {/* Nama Konsumen */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Nama Konsumen</label>
+            <p className="border border-gray-200 rounded-md p-2">{userData?.name || ''}</p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Nama Kambing</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '' : transactionData.goat.name}</p>
+
+          {/* Nama Kambing */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Nama Kambing</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.goat?.name || ''}</p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '' : transactionData.goat.type}</p>
+
+          {/* Jenis */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Jenis</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.goat?.type || ''}</p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Berat per Waktu</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '0' : transactionData.goat.weight} kg / {transactionData === null ? '0' : transactionData.goat.time} Bulan</p>
+
+          {/* Berat per Waktu */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Berat per Waktu</label>
+            <p className="border border-gray-200 rounded-md p-2">
+              {transactionData ? `${transactionData.goat.weight} kg / ${transactionData.goat.time} Bulan` : ''}
+            </p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Jenis Kelamin</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '' : transactionData.goat.sex}</p>
+
+          {/* Jenis Kelamin */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Jenis Kelamin</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.goat?.sex || ''}</p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Harga</p>
-            <p className='w-full border border-gray-200 rounded-md text-[#EA341B] font-medium p-2'>Rp. {transactionData === null ? '0' : transactionData.goat.price.toLocaleString().replaceAll(',', '.')}</p>
+
+          {/* Harga */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Harga</label>
+            <p className="border border-gray-200 rounded-md text-red-600 font-semibold p-2">
+              Rp. {transactionData?.goat?.price?.toLocaleString().replaceAll(',', '.') || '0'}
+            </p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Pakan</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '' : transactionData.food.name}</p>
+
+          {/* Pakan */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Pakan</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.food?.name || ''}</p>
           </div>
-          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Perawatan</p>
-            <p className='w-full border border-gray-200 rounded-md p-2'>{transactionData === null ? '' : transactionData.maintenance.name}</p>
+
+          {/* Perawatan */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Perawatan</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.maintenance?.name || ''}</p>
           </div>
-          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
-            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => confirmOrder()}>Konfirmasi</button>
+
+          {/* Tombol Konfirmasi */}
+          <div className="flex justify-end pt-4">
+            <button
+              onClick={confirmOrder}
+              className="bg-green-700 hover:bg-green-800 transition text-white font-semibold px-4 py-2 rounded-lg"
+            >
+              Konfirmasi
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Dialog Modal */}
+      {/* Modal */}
       <Modal
         isOpen={visibleModal}
         onRequestClose={() => setVisibleModal(false)}
@@ -127,25 +152,27 @@ const Confirmation = () => {
             transform: 'translate(-50%, -50%)',
           },
           overlay: {
-            color: '#00000000',
-            backgroundColor: '#000000CC',
+            backgroundColor: '#00000099',
             zIndex: '100',
-          }
-        }} >
-
-        <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
-          <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
-          <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
-          <div className='flex flex-row justify-end items-center space-x-4'>
-            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
+          },
+        }}
+      >
+        <div className="p-4 w-full max-w-sm text-black space-y-6">
+          <h1 className="text-xl font-bold text-gray-800">{title}</h1>
+          <p className="text-base font-medium text-green-800">{description}</p>
+          <div className="flex justify-end">
+            <button
+              onClick={() => setVisibleModal(false)}
+              className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg"
+            >
+              Oke, Siap
+            </button>
           </div>
         </div>
-
       </Modal>
 
       {/* Loading */}
       <Loading show={loading} />
-
     </div>
   );
 }

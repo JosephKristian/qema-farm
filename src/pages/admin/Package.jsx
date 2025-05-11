@@ -261,51 +261,91 @@ const Package = () => {
         <Sidebar />
 
         {/* Content */}
-        <div className='flex-1 flex flex-col items-center space-y-4 px-10 my-[90px] overflow-y-auto'>
-          <div className='w-full flex flex-row justify-between items-center'>
-            <button onClick={() => showAddModal()} className='bg-[#145412] text-white font-medium text-lg rounded-md px-4 py-2'>Tambah</button>
-            <input type='text' defaultValue={search} onChange={(e) => setSearch(e.target.value)} placeholder='Cari Paket' className='w-96 border border-gray-200 rounded-md self-end outline-none p-2' />
+        <div className='flex-1 flex flex-col items-center space-y-4 px-4 sm:px-6 md:px-10 my-[90px] overflow-y-auto'>
+          {/* Tombol Tambah & Input Pencarian */}
+          <div className='w-full flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0'>
+            <button
+              onClick={() => showAddModal()}
+              className='bg-[#145412] text-white font-medium text-base sm:text-lg rounded-md px-4 py-2 w-full sm:w-auto'
+            >
+              Tambah
+            </button>
+            <input
+              type='text'
+              defaultValue={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder='Cari Paket'
+              className='w-full sm:w-96 border border-gray-200 rounded-md outline-none p-2 text-sm sm:text-base'
+            />
           </div>
-          <div className='py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md'>
-            <table class="bg-white w-full table-fixed border-collapse bordertext-sm">
+
+          {/* Tabel Responsif */}
+          <div className='w-full py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md overflow-x-auto'>
+            <table className="bg-white w-full min-w-[900px] table-fixed border-collapse border text-sm">
               <thead>
-                <tr className='text-white text-lg'>
-                  <th className='bg-gray-600 border border-white py-4'>Paket</th>
-                  <th className='bg-gray-600 border border-white py-4'>Kambing</th>
-                  <th className='bg-gray-600 border border-white py-4'>Pakan</th>
-                  <th className='bg-gray-600 border border-white py-4'>Perawatan</th>
-                  <th className='bg-gray-600 border border-white py-4'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4'>Aksi</th>
+                <tr className='text-white text-xs sm:text-sm md:text-base'>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Paket</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Kambing</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Pakan</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Perawatan</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Harga</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  packageRed.filter(e => e.name.toLowerCase().includes(search.toLowerCase().trim())).map(element => {
-                    index++;
-                    return (
-                      <tr key={element.uid} className={(index % 2) === 0 ? 'text-base font-medium bg-gray-100' : 'text-base font-medium'}>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.goat.name} {element.goat.sex} ({element.goat.type})</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.food.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#b31818] capitalize'>Rp. <span className={element.discount_price !== 0 ? 'line-through text-[#333333] font-normal' : 'text-[#b31818] text-base font-medium'}>{format.format(element.price).replaceAll(',', '.')}</span> <span className='text-[#b31818] text-base font-semibold'>{element.discount_price !== 0 ? format.format(element.discount_price).replaceAll(',', '.') : ''}</span></td>
-                        <td className='flex flex-row space-x-1 overflow-auto p-2'>
-                          <button onClick={() => {
-                            setPackageSelected(element);
-                            setDetailPackageModal(true);
-                          }} className='bg-gray-800 rounded-lg text-white px-4 py-2'>Detail</button>
-                          <button onClick={() => {
-                            setPackageSelected(element);
-                            setEditPackageModal(true);
-                          }} className='bg-[#145412] rounded-lg text-white px-4 py-2'>Ubah</button>
-                          <button onClick={() => {
-                            setPackageSelected(element);
-                            setDeletePackageModal(true);
-                          }} className='bg-[#b31818] rounded-lg text-white px-4 py-2'>Hapus</button>
-                        </td>
-                      </tr>
-                    )
-                  })
+                  packageRed.filter(e => e.name.toLowerCase().includes(search.toLowerCase().trim())).map((element, index) => (
+                    <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
+                        {element.goat.name} {element.goat.sex} ({element.goat.type})
+                      </td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.food.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#b31818] capitalize'>
+                        Rp.{' '}
+                        <span className={element.discount_price !== 0
+                          ? 'line-through text-[#333333] font-normal'
+                          : 'text-[#b31818] text-base font-medium'}>
+                          {format.format(element.price).replaceAll(',', '.')}
+                        </span>{' '}
+                        <span className='text-[#b31818] text-base font-semibold'>
+                          {element.discount_price !== 0 ? format.format(element.discount_price).replaceAll(',', '.') : ''}
+                        </span>
+                      </td>
+                      <td className='border border-slate-200 p-2'>
+                        <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
+                          <button
+                            onClick={() => {
+                              setPackageSelected(element);
+                              setDetailPackageModal(true);
+                            }}
+                            className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                          >
+                            Detail
+                          </button>
+                          <button
+                            onClick={() => {
+                              setPackageSelected(element);
+                              setEditPackageModal(true);
+                            }}
+                            className='bg-[#145412] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                          >
+                            Ubah
+                          </button>
+                          <button
+                            onClick={() => {
+                              setPackageSelected(element);
+                              setDeletePackageModal(true);
+                            }}
+                            className='bg-[#b31818] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 }
               </tbody>
             </table>
@@ -345,12 +385,12 @@ const Package = () => {
           {/* Package Price */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Harga Paket <span className='text-red-600'>*</span></p>
-            <input type='number' defaultValue={0} onChange={(e) => setPackagePrice(e.target.value.length < 1 ? 1 : parseInt(e.target.value))} placeholder='Harga Paket' className='w-full border border-gray-200 rounded-md outline-none p-2'/>
+            <input type='number' defaultValue={0} onChange={(e) => setPackagePrice(e.target.value.length < 1 ? 1 : parseInt(e.target.value))} placeholder='Harga Paket' className='w-full border border-gray-200 rounded-md outline-none p-2' />
           </div>
           {/* Package Discount */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Harga Diskon</p>
-            <input type='number' defaultValue={0} onChange={(e) => setPackageDiscount(e.target.value === '' ? 1 : parseInt(e.target.value))} placeholder='Harga Diskon Paket' className='w-full border border-gray-200 rounded-md outline-none p-2'/>
+            <input type='number' defaultValue={0} onChange={(e) => setPackageDiscount(e.target.value === '' ? 1 : parseInt(e.target.value))} placeholder='Harga Diskon Paket' className='w-full border border-gray-200 rounded-md outline-none p-2' />
           </div>
           {/* Goat */}
           <div className='flex flex-col justify-between items-start space-y-2'>

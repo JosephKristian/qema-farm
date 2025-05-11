@@ -78,44 +78,52 @@ const Transaction = () => {
         <Sidebar />
 
         {/* Content */}
-        <div className='flex-1 flex flex-col items-center space-y-4 px-10 my-[90px] overflow-y-auto'>
-          {/* <input type='text' defaultValue={search} onChange={(e) => setSearch(e.target.value)} placeholder='Cari Nama Pengguna' className='w-96 border border-gray-200 rounded-md self-end outline-none p-2' /> */}
-          <div className='py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md'>
-            <table class="bg-white w-full table-fixed border-collapse bordertext-sm">
+        <div className='flex-1 flex flex-col items-center space-y-4 px-4 sm:px-6 md:px-10 my-[90px] overflow-y-auto'>
+          {/* Tabel Responsif */}
+          <div className='w-full py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md overflow-x-auto'>
+            <table className="bg-white w-full min-w-[1000px] table-fixed border-collapse border text-sm">
               <thead>
-                <tr className='text-white text-lg'>
-                  <th className='bg-gray-600 border border-white py-4'>No. Transaksi</th>
-                  <th className='bg-gray-600 border border-white py-4'>Kambing</th>
-                  <th className='bg-gray-600 border border-white py-4'>Jenis</th>
-                  <th className='bg-gray-600 border border-white py-4'>Pakan</th>
-                  <th className='bg-gray-600 border border-white py-4'>Perawatan</th>
-                  <th className='bg-gray-600 border border-white py-4'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4'>Status</th>
-                  <th className='bg-gray-600 border border-white py-4'>Aksi</th>
+                <tr className='text-white text-xs sm:text-sm md:text-base'>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>No. Transaksi</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Kambing</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Jenis</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Pakan</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Perawatan</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Harga</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Status</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2'>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  state.map(element => {
-                    index++;
-                    return (
-                      <tr key={element.uid} className={(index % 2) === 0 ? 'text-base font-medium bg-gray-100' : 'text-base font-medium'}>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333]'>{element.uid}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.goat.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.goat.type}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.food.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#EA341B] font-medium capitalize'>Rp. {element.goat.price.toLocaleString().replaceAll(',', '.')}</td>
-                        <td className='border border-slate-200 overflow-auto p-2 text-[#333333] capitalize'>{element.confirmed ? 'Dikonfirmasi' : 'Belum Dikonfirmasi'}</td>
-                        <td className='flex flex-col space-y-4 items-start overflow-auto p-1'>
-                          <button onClick={() => {
-                            getUser(element.user);
-                            setTransactionSelected(element);
-                          }} className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2'>Detail</button>
-                        </td>
-                      </tr>
-                    )
-                  })
+                  state.map((element, index) => (
+                    <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
+                      <td className='border border-slate-200 p-2 text-[#333333]'>{element.uid}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.goat.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.goat.type}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.food.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
+                      <td className='border border-slate-200 p-2 text-[#EA341B] font-medium capitalize'>
+                        Rp. {element.goat.price.toLocaleString().replaceAll(',', '.')}
+                      </td>
+                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
+                        {element.confirmed ? 'Dikonfirmasi' : 'Belum Dikonfirmasi'}
+                      </td>
+                      <td className='border border-slate-200 p-2'>
+                        <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
+                          <button
+                            onClick={() => {
+                              getUser(element.user);
+                              setTransactionSelected(element);
+                            }}
+                            className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 text-xs sm:text-sm'
+                          >
+                            Detail
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
                 }
               </tbody>
             </table>

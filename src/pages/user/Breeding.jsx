@@ -24,7 +24,7 @@ const Breeding = () => {
 
   useEffect(() => {
     retrieveAllPackage();
-    return () => {}
+    return () => { }
   }, [])
 
   const retrieveAllPackage = async () => {
@@ -39,7 +39,7 @@ const Breeding = () => {
         (reject) => { throw reject; }
       );
     } catch (error) {
-      showTheModal('Terjadi Kesalahan!', error.toString());
+      showTheModal('Terjadi Kesalahan! [retrieveAllPackage]', error.toString());
     }
   }
 
@@ -61,7 +61,7 @@ const Breeding = () => {
         (reject) => { throw reject; }
       );
     } catch (error) {
-      showTheModal('Terjadi Kesalahan!', error.toString());
+      showTheModal('Terjadi Kesalahan! [addNewPackageTransaction]', error.toString());
     } finally {
       setLoading(false);
     }
@@ -133,66 +133,69 @@ const Breeding = () => {
       <Navbar />
 
       {/* Top Panel */}
-      <div className='gradient-green-white w-full pt-8 px-14 mb-16 overflow-hidden relative'>
-        <div className='flex flex-col space-y-5 absolute top-[60px] left-[64px]'>
-          <h1 className='text-black text-[40px] font-bold max-w-[832px] relative'>Perbanyak kambingmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMAFARM</span></h1>
-          <p className='font-inter text-[#333333] text-xl font-normal max-w-[420px] relative'>QEMAFARM memberikan jasa breeding untuk kamu yang berinvestsi  dengan kami, bersama dengan perawtan, dll.</p>
+      <div className='gradient-green-white w-full pt-8 px-6 mb-16 overflow-hidden relative'>
+        <div className='flex flex-col space-y-5 absolute top-[60px] left-[16px] sm:left-[64px]'>
+          <h1 className='text-black text-[30px] sm:text-[40px] font-bold max-w-[832px] relative'>
+            Perbanyak kambingmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMAFARM</span>
+          </h1>
+          <p className='font-inter text-[#333333] text-base sm:text-xl font-normal max-w-[420px] relative'>
+            QEMAFARM memberikan jasa breeding untuk kamu yang berinvestasi dengan kami, bersama dengan perawatan, dll.
+          </p>
         </div>
         <div className='w-full flex flex-row-reverse justify-between items-end space-x-4'>
-          <img src={Breeding1} alt='/' className='rounded-t-full h-1/4' />
-          <img src={Breeding2} alt='/' className='rounded-t-full h-2/4' />
-          <img src={Breeding3} alt='/' className='rounded-t-full h-3/4' />
-          <img src={Breeding4} alt='/' className='rounded-t-full h-full' />
+          <img src={Breeding1} alt='/' className='rounded-t-full h-1/4 sm:h-1/4 md:h-2/4 lg:h-3/4 xl:h-full' />
+          <img src={Breeding2} alt='/' className='rounded-t-full h-2/4 sm:h-2/4 md:h-3/4 lg:h-2/4 xl:h-1/4' />
+          <img src={Breeding3} alt='/' className='rounded-t-full h-3/4 sm:h-2/4 md:h-3/4 lg:h-2/4 xl:h-3/4' />
+          <img src={Breeding4} alt='/' className='rounded-t-full h-full sm:h-1/2 md:h-3/4 lg:h-full xl:h-full' />
         </div>
       </div>
 
       {/* Preview Packet */}
-      <div className='mx-8 grid grid-cols-3 gap-8 mb-[68px]'>
+      <div className='mx-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 mb-[68px]'>
         <div>
           <img src={Breeding2} alt='/' className='rounded-t-full' />
         </div>
         <div className='col-span-2 flex flex-col space-y-6'>
-          <h1 className='font-bold text-black text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu disini</h1>
-          <div className='grid grid-cols-3'>
+          <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu disini</h1>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
             {rendered_choosen()}
           </div>
           <div>
-            <button onClick={() => buyPackage()} className={choosenOption == null ? 'hidden' : 'text-white text-xl font-semibold px-[15px] py-[10px] bg-[#145412B2] rounded-[10px]'}>Transaksi</button>
+            <button onClick={() => buyPackage()} className={choosenOption == null ? 'hidden' : 'text-white text-xl font-semibold px-[15px] py-[10px] bg-[#145412B2] rounded-[10px]'}>
+              Transaksi
+            </button>
           </div>
         </div>
       </div>
 
       {/* Packet Menu */}
-      <div className='mx-8 grid grid-cols-2 gap-[72px] mb-8'>
+      <div className='mx-4 sm:mx-8 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-[72px] mb-8'>
         {/* Packet Info */}
-        <div className='grid grid-flow-row gap-6'>
-          <div className='flex items-center justify-center bg-[#EDF2FA] aspect-[10/6] rounded-xl'>
-            <h2 className='text-black text-[26px] font-semibold'>Apa yang kamu dapat?</h2>
+        <div className='flex flex-col gap-4 sm:gap-6 w-full'>
+          <div className='flex items-center justify-center bg-[#EDF2FA] rounded-xl w-full py-6'>
+            <h2 className='text-black text-[20px] sm:text-[26px] font-semibold text-center'>Apa yang kamu dapat?</h2>
           </div>
-          <div className='flex flex-col justify-between space-y-4 aspect-[10/6] rounded-xl'>
-            <div className='flex items-center space-x-6'>
-              <div><FaCheckCircle size={32} color='#009500' /></div>
-              <p className='text-[#000000] text-2xl'>Jasa breeding</p>
-            </div>
-            <div className='flex items-center space-x-6'>
-              <div><FaCheckCircle size={32} color='#009500' /></div>
-              <p className='text-[#000000] text-2xl'>Perawatan berkala(vitamin,pakan breeding, pengecekan dokter hewan)</p>
-            </div>
-            <div className='flex items-center space-x-6'>
-              <div><FaCheckCircle size={32} color='#009500' /></div>
-              <p className='text-[#000000] text-2xl'>monitoring proses breeding secara langsung melalui cctv</p>
-            </div>
-            <div className='flex items-center space-x-6'>
-              <div><FaCheckCircle size={32} color='#009500' /></div>
-              <p className='text-[#000000] text-2xl'>pengajaran dan pengalaman melakukan breeding dengan ahli di peternakan</p>
-            </div>
+          <div className='flex flex-col justify-between space-y-4 bg-white rounded-xl w-full px-4 py-4'>
+            {[
+              "Jasa breeding",
+              "Perawatan berkala (vitamin, pakan breeding, pengecekan dokter hewan)",
+              "Monitoring proses breeding secara langsung melalui CCTV",
+              "Pengajaran dan pengalaman melakukan breeding dengan ahli di peternakan"
+            ].map((text, index) => (
+              <div key={index} className='flex items-start space-x-4'>
+                <FaCheckCircle size={24} className='min-w-[24px]' color='#009500' />
+                <p className='text-[#000000] text-base sm:text-xl break-words'>{text}</p>
+              </div>
+            ))}
           </div>
         </div>
+
         {/* Packet Options */}
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 w-full'>
           {rendered_option()}
         </div>
       </div>
+
 
       {/* Footer */}
       <Footer />
@@ -211,6 +214,7 @@ const Breeding = () => {
             right: 'auto',
             bottom: 'auto',
             transform: 'translate(-50%, -50%)',
+            maxWidth: '95vw', // Gunakan lebar maksimal 95% layar
             maxHeight: '95vh',
           },
           overlay: {
@@ -220,7 +224,7 @@ const Breeding = () => {
           }
         }} >
 
-        <div className='bg-transparent rounded-xl p-2 w-[360px] min-h-[280px] text-black flex flex-col justify-between space-y-6'>
+        <div className='bg-transparent rounded-xl p-2 w-full sm:w-[360px] min-h-[280px] text-black flex flex-col justify-between space-y-6'>
           <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
             <p className='text-xl font-semibold text-[#145412] mb-2 flex-1'>{selectedOption === null ? '' : selectedOption.name}</p>
             <p className='text-lg font-bold text-[#b31818] flex-1'>Rp.  <span className={selectedOption === null ? '' : (selectedOption.discount_price !== 0 ? 'line-through text-[#333333] font-normal' : 'text-[#b31818] text-lg font-bold')}>{selectedOption === null ? '' : format.format(selectedOption.price).replaceAll(',', '.')}</span> <span className='text-[#b31818] text-lg font-bold'>{selectedOption === null ? '' : (selectedOption.discount_price !== 0 ? format.format(selectedOption.discount_price).replaceAll(',', '.') : '')}</span></p>

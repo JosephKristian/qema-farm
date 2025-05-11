@@ -191,19 +191,19 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
 
   const renderContent = () => {
     if (goatContent) {
-    return (<div className='flex flex-col space-y-4'>
-      {goats.map((element) => (
-        <div className='flex flex-row justify-between space-x-4'>
-          <div className='bg-[#145412] self-start rounded-[5px] p-2'>
-            <img src={GoatWhite} alt='/' className='w-6 h-6' />
+      return (<div className='flex flex-col space-y-4'>
+        {goats.map((element) => (
+          <div className='flex flex-row justify-between space-x-4'>
+            <div className='bg-[#145412] self-start rounded-[5px] p-2'>
+              <img src={GoatWhite} alt='/' className='w-6 h-6' />
+            </div>
+            <div className='flex-1 flex flex-col space-y-[10px]'>
+              <p className='text-base text-[#333333] font-semibold uppercase'>{element.name}</p>
+              <p className='text-base text-[#474747] font-normal'>{element.desccription}</p>
+            </div>
           </div>
-          <div className='flex-1 flex flex-col space-y-[10px]'>
-            <p className='text-base text-[#333333] font-semibold uppercase'>{element.name}</p>
-            <p className='text-base text-[#474747] font-normal'>{element.desccription}</p>
-          </div>
-        </div>
-      ))}
-    </div>);
+        ))}
+      </div>);
     } else if (foodContent) {
       return (<div className='flex flex-col space-y-4'>
         {foods.map((element) => (
@@ -262,28 +262,28 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
             <img src={Goat} alt='/' className='w-7 h-7' />
             <p className='font-semibold text-[16px] text-[#333333] text-center'>jenis kambing</p>
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>{ goats.length }</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>{goats.length}</p>
           </div>
           <div onClick={() => {
             setFoodContent(true);
             setVisibleModal(true);
-          }}  className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
+          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
             <img src={Plant} alt='/' className='w-7 h-7' />
             <p className='font-semibold text-[16px] text-[#333333] text-center'>jenis pakan</p>
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>{ foods.length }</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>{foods.length}</p>
           </div>
           <div onClick={() => {
             setMaintenanceContent(true);
             setVisibleModal(true);
-          }}  className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
+          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
             <img src={Task} alt='/' className='w-7 h-7' />
             <p className='font-semibold text-[16px] text-[#333333] text-center'>perawatan</p>
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>{ maintenances.length }</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>{maintenances.length}</p>
           </div>
         </div>
       </div>
 
-      {/* Graphic of Traffic Market */}
+       {/* Graphic of Traffic Market */}
       <div className='flex flex-col items-center mb-24'>
         <div className='w-full border-l-[64px] border-l-[#218A1F] sm:text-[26px] text-xl font-bold text-[#218A1F] pl-8 mb-6'>
           <p>Pergerakan Harga Jual Kambing per desember</p>
@@ -306,7 +306,6 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           </div>
         </div>
       </div>
-
       {/* Invest Monitoring */}
       <InvestMonitoring />
 
@@ -317,6 +316,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           <p>Kambing Kamu!</p>
         </div>
         <div className='lg:w-[1024px] w-full mt-16 pb-12 flex lg:px-0 px-4'>
+          {/* Left button */}
           <div className='max-h-[500px] flex items-center'>
             <button onClick={() => {
               if (articleIndex <= 0) {
@@ -324,24 +324,30 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
               } else {
                 setArticleIndex(prev => articleIndex - 1);
               }
-            }} className='bg-[#218A1F] hover:bg-[#145412] py-4 px-2'><AiOutlineLeft color='#FFFFFF' size={18} /></button>
+            }} className='bg-[#218A1F] hover:bg-[#145412] py-4 px-2 flex lg:block md:hidden'>
+              <AiOutlineLeft color='#FFFFFF' size={18} />
+            </button>
           </div>
-          <div className='bg-[#218A1F] max-h-[500px] lg:ml-[15%] rounded-br-[25%] overflow-visible grid grid-cols-2 auto-cols-max gap-4 mx-2'>
-            <div className='ml-[-15%]'>
-              <img src={ articles[articleIndex].image } alt='/' className='rounded-bl-[25%] my-8 ' />
+
+          {/* Article Content */}
+          <div className='bg-[#218A1F] max-h-[500px] lg:ml-[15%] rounded-br-[25%] overflow-visible grid grid-cols-1 lg:grid-cols-2 gap-4 mx-2'>
+            <div className='lg:ml-[-15%]'>
+              <img src={articles[articleIndex].image} alt='/' className='rounded-bl-[25%] w-full h-auto' />
             </div>
-            <div className='flex flex-col justify-between py-8'>
-              <div className='gradient-green-transparent py-6 px-8'>
-                <h3 className='text-[#FCFCFC] text-lg font-bold'>{ articles[articleIndex].title }</h3>
+            <div className='flex flex-col justify-between py-4 px-4'>
+              <div className='gradient-green-transparent py-4 px-4'>
+                <h3 className='text-[#FCFCFC] text-lg font-bold'>{articles[articleIndex].title}</h3>
               </div>
-              <div className='px-8'>
-                <p className='text-[#FCFCFC] text-sm font-normal'>{ articles[articleIndex].short_desc }</p>
+              <div className='px-4'>
+                <p className='text-[#FCFCFC] text-sm font-normal'>{articles[articleIndex].short_desc}</p>
               </div>
-              <div className='px-8'>
-                <button className='font-semibold text-[12px] text-white w-[120px] py-2 rounded-full bg-[#145412]' onClick={() => navigate('/artikel', {state: {article: articles[articleIndex]}})}>Baca</button>
+              <div className='px-4'>
+                <button className='font-semibold text-[12px] text-white w-[120px] py-2 rounded-full bg-[#145412]' onClick={() => navigate('/artikel', { state: { article: articles[articleIndex] } })}>Baca</button>
               </div>
             </div>
           </div>
+
+          {/* Right button */}
           <div className='max-h-[500px] flex items-center'>
             <button onClick={() => {
               if (articleIndex === (articles.length - 1)) {
@@ -349,10 +355,13 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
               } else {
                 setArticleIndex(prev => articleIndex + 1);
               }
-            }} className='bg-[#218A1F] hover:bg-[#145412] py-4 px-2'><AiOutlineRight color='#FFFFFF' size={18} /></button>
+            }} className='bg-[#218A1F] hover:bg-[#145412] py-4 px-2 flex lg:block md:hidden'>
+              <AiOutlineRight color='#FFFFFF' size={18} />
+            </button>
           </div>
         </div>
       </div>
+
 
       {/* Footer */}
       <Footer />
@@ -391,7 +400,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           <div className='self-end'>
             <button onClick={() => closeModal()} className='bg-[#CCCCCC] p-2'><AiOutlineClose size={12} color='#28303F' /></button>
           </div>
-          { renderContent() }
+          {renderContent()}
         </div>
 
       </Modal>

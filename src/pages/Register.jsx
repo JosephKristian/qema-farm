@@ -6,6 +6,7 @@ import Logo from '../assets/logo.png';
 import { checkSimilarEmail, checkSimilarPhone, addNewUsersToDatabase, getUserData } from '../functions/Database';
 import { registerUsers } from '../functions/Auth';
 import Loading from '../components/Loading';
+import { database, app, auth, storage, } from '../config/FirebaseConfig';
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -39,37 +40,64 @@ const Register = () => {
 
   const doProcessRegister = async () => {
     try {
+      console.log("▶ Mulai proses registrasi...");
+
+      console.log("🔥 Firebase App Name:", app.name); // "[DEFAULT]" jika berhasil
+      console.log("🔐 Firebase Auth instance:", auth ? "Ready" : "Not initialized");
+      console.log("💾 Firebase Database instance:", database ? "Ready" : "Not initialized");
+      console.log("🗂️ Firebase Storage instance:", storage ? "Ready" : "Not initialized");
+
       if (doValidation()) {
+        console.log("✅ Validasi input lolos.");
         setLoading(true);
+
+        console.log("🔍 Mengecek email:", email);
         await checkSimilarEmail(email).then(
           (resolve) => {
             if (resolve) {
+              console.error("❌ Email sudah digunakan!");
               throw Error('Email sudah digunakan! Gunakan alamat email lainnya!');
+            } else {
+              console.log("✅ Email belum terdaftar.");
             }
           },
-          (reject) => { throw Error(reject) },
+          (reject) => {
+            console.error("❌ Gagal cek email:", reject);
+            throw Error(reject);
+          }
         );
+
+        console.log("🔍 Mengecek nomor WhatsApp:", phone);
         await checkSimilarPhone(phone).then(
           (resolve) => {
             if (resolve) {
+              console.error("❌ No. Whatsapp sudah digunakan!");
               throw Error('No. Whatsapp sudah digunakan! Gunakan No. Whatsapp lainnya!');
+            } else {
+              console.log("✅ No. Whatsapp belum terdaftar.");
             }
           },
-          (reject) => { throw Error(reject) },
+          (reject) => {
+            console.error("❌ Gagal cek No. Whatsapp:", reject);
+            throw Error(reject);
+          }
         );
+
+        console.log("📝 Mendaftarkan user dengan email:", email);
         await registerUsers(email, password).then(
           async (resolve) => {
             const usersUid = resolve.uid;
-            await addNewUsersToDatabase(
-              usersUid,
-              name,
-              email,
-              phone,
-              password,
-            ).then(
+            console.log("✅ User terdaftar dengan UID:", usersUid);
+
+            console.log("📦 Menambahkan user ke database...");
+            await addNewUsersToDatabase(usersUid, name, email, phone, password).then(
               async (resolve) => {
+                console.log("✅ User berhasil ditambahkan ke database.");
+
+                console.log("📥 Mengambil data user...");
                 await getUserData(usersUid).then(
                   (resolve) => {
+                    console.log("✅ Data user ditemukan:", resolve);
                     localStorage.setItem('uid', usersUid);
                     localStorage.setItem('name', resolve.name);
                     localStorage.setItem('email', resolve.email);
@@ -77,20 +105,35 @@ const Register = () => {
                     localStorage.setItem('password', resolve.password);
                     localStorage.setItem('role', resolve.role);
                     localStorage.setItem('avatar', resolve.avatar);
+
+                    console.log("🔁 Navigasi ke halaman utama...");
                     navigate('/', { replace: true });
                   },
-                  (reject) => { throw Error(reject); },
+                  (reject) => {
+                    console.error("❌ Gagal mengambil data user:", reject);
+                    throw Error(reject);
+                  }
                 );
               },
-              (reject) => { throw Error(reject) },
+              (reject) => {
+                console.error("❌ Gagal menambahkan user ke database:", reject);
+                throw Error(reject);
+              }
             );
           },
-          (reject) => { throw Error(reject) },
+          (reject) => {
+            console.error("❌ Gagal registrasi user:", reject);
+            throw Error(reject);
+          }
         );
+      } else {
+        console.warn("⚠ Validasi input gagal.");
       }
     } catch (error) {
+      console.error("❌ Error:", error.message);
       showTheModal('Terjadi Kesalahan!', error.message);
     } finally {
+      console.log("⏹ Proses selesai.");
       setLoading(false);
     }
   };

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import Loading from '../../components/Loading';
@@ -20,7 +20,7 @@ const ConfirmationPackage = () => {
       navigate('/', { replace: true });
     }
     retrievePackage();
-    return () => {}
+    return () => { }
   }, [])
 
   const showTheModal = (title, description) => {
@@ -74,8 +74,8 @@ const ConfirmationPackage = () => {
       {/* Navbar */}
       <Navbar />
 
-      <div className='flex justify-center items-center'>
-        <div className='bg-transparent rounded-xl p-2 min-w-[420px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
+      <div className='flex justify-center items-center px-4 py-6'>
+  <div className='bg-transparent rounded-xl p-4 w-full max-w-md text-black flex flex-col justify-between space-y-4'>
           <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
             <p className='text-base font-medium text-[#333333] flex-1'>Nama Konsumen</p>
             <p className='w-full border border-gray-200 rounded-md p-2'>{userData === null ? '' : userData.name}</p>
@@ -114,7 +114,6 @@ const ConfirmationPackage = () => {
         </div>
       </div>
 
-      {/* Dialog Modal */}
       <Modal
         isOpen={visibleModal}
         onRequestClose={() => setVisibleModal(false)}
@@ -125,28 +124,31 @@ const ConfirmationPackage = () => {
             right: 'auto',
             bottom: 'auto',
             transform: 'translate(-50%, -50%)',
+            padding: 0,
+            border: 'none',
+            background: 'transparent',
           },
           overlay: {
-            color: '#00000000',
             backgroundColor: '#000000CC',
-            zIndex: '100',
+            zIndex: 100,
           }
-        }} >
+        }}
+      >
 
-        <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
-          <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
-          <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
-          <div className='flex flex-row justify-end items-center space-x-4'>
-            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
-          </div>
+      <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
+        <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
+        <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
+        <div className='flex flex-row justify-end items-center space-x-4'>
+          <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
         </div>
+      </div>
 
-      </Modal>
+    </Modal>
 
-      {/* Loading */}
-      <Loading show={loading} />
+      {/* Loading */ }
+  <Loading show={loading} />
 
-    </div>
+    </div >
   );
 }
 
