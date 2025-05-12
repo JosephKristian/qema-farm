@@ -70,7 +70,7 @@ const Investasi = () => {
       showTheModal('Terjadi Kesalahan!', error.toString());
     }
   }
-
+  
   const retrieveAllMaintenance = async () => {
     try {
       await getAllMaintenance().then(

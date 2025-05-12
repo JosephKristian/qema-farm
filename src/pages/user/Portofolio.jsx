@@ -1,132 +1,339 @@
-import React, {useState} from 'react';
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { AiOutlineLineChart, AiOutlineRise } from 'react-icons/ai';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { AiOutlineMinus, AiOutlinePlus } from 'react-icons/ai';
+import PortofolioImage from '../../assets/portofolio.png';
 import Footer from '../../components/Footer';
 import InvestMonitoring from '../../components/InvestMonitoring';
 import Navbar from '../../components/Navbar';
-import PortofolioImage from '../../assets/portofolio.png';
 import Money from '../../assets/money.png';
 import Goat from '../../assets/goat-white.png';
-import Maintenance from '../../assets/maintenance.png';
-import Grass from '../../assets/grass.png';
 import Decoration1 from '../../assets/decoration-box-1.png';
 import Decoration2 from '../../assets/decoration-box-2.png';
 import NoPortofolio from '../../assets/no_portofolio.png';
+import { getAllGoat, getAllTransaction } from '../../functions/Database';
+
+// Format angka
+const numberFormatter = new Intl.NumberFormat('id-ID', {
+  style: 'currency',
+  currency: 'IDR',
+  minimumFractionDigits: 0,
+});
+
+
 
 const Portofolio = () => {
-  const numberFormatter = Intl.NumberFormat();
-  const [specialDay, setSpecialDay] = useState(false);
+  const [specialDay, setSpecialDay] = useState(true);
   const [quantity, setQuantity] = useState(1);
-  const hargaAwal = [7120000, 7000000];
-  const hargaBulan1 = [7200000, 7060000];
-  const hargaBulan2 = [7260000, 7110000];
-  const hargaBulan3 = [7300000, 7180000];
-  const navigate = useNavigate();
+  const [userTransactions, setUserTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const uid = localStorage.getItem('uid');
+
+  const [averagePrice, setAveragePrice] = useState(3500000); 
+  const [loadingPrices, setLoadingPrices] = useState(true);
+  // Harga awal per ekor
+  useEffect(() => {
+    const fetchHargaKambing = async () => {
+      try {
+        const goats = await getAllGoat(); 
+        if (goats.length === 0) {
+          setAveragePrice(3500000); 
+          setLoadingPrices(false);
+          return;
+        }
+
+        const total = goats.reduce((sum, goat) => sum + (goat.price || 0), 0);
+        const avg = Math.round(total / goats.length); // rata-rata harga
+        setAveragePrice(avg);
+      } catch (error) {
+        console.error('Gagal mengambil data harga kambing:', error);
+        setAveragePrice(3500000); // fallback
+      } finally {
+        setLoadingPrices(false);
+      }
+    };
+
+    fetchHargaKambing();
+  }, []);
+
+  // Asumsikan naik 30% saat Idul Adha
+  const persentaseNaik = 0.3; // 30%
+
+  const hargaIdulAdha = averagePrice * (1 + persentaseNaik);
+  const hargaBiasa = averagePrice;
+
+  // Harga per bulan (naik bertahap)
+  const hargaBulan1 = hargaBiasa * 1.06; // +6%
+  const hargaBulan2 = hargaBulan1 * 1.06; // +6%
+  const hargaBulan3 = hargaBulan2 * 1.06; // +6%
+
+  useEffect(() => {
+    if (!uid) return;
+    getAllTransaction().then((data) => {
+      const filtered = data.filter(trx => trx.user === uid);
+      setUserTransactions(filtered);
+      setLoading(false);
+    });
+  }, [uid]);
+
+  // Kalkulasi
+  const calculateInvestment = (transactions) => {
+    const totalGoat = transactions.length;
+    const initialPrice = transactions[0]?.goat?.price || 0;
+    const totalInvested = transactions.reduce((acc, trx) => acc + (trx.goat?.price || 0), 0);
+    const estimatedProfit = totalInvested * 0.2; // Asumsi keuntungan 20%
+    const totalNow = totalInvested + estimatedProfit;
+
+    return {
+      initialPrice,
+      totalGoat,
+      totalInvested,
+      estimatedProfit,
+      totalNow
+    };
+  };
+
+  if (!uid) {
+    return (
+      <>
+        <Navbar />
+        <div className={`${localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex justify-center py-8 px-4 sm:px-8 mb-12'}`}>
+          <div className="relative w-full max-w-6xl">
+            <img src={PortofolioImage} alt="/" className="w-full h-auto rounded-xl shadow-xl" />
+            <h1 className="absolute top-4 left-4 sm:top-10 sm:left-10 bg-[#145412CF] p-4 sm:p-10 rounded-tr-3xl text-white text-2xl sm:text-4xl font-bold z-10">Segera Buat Portofoliomu</h1>
+          </div>
+        </div>
+
+        <div className="min-h-screen flex items-center justify-center text-center p-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-gray-700 mb-4">Silakan login terlebih dahulu</h1>
+            <p className="text-gray-500">Halaman ini hanya tersedia untuk pengguna terdaftar.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (loading) {
+    return (
+      <>
+        <Navbar />
+        <div className={`${localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex justify-center py-8 px-4 sm:px-8 mb-12'}`}>
+          <div className="relative w-full max-w-6xl">
+            <img src={PortofolioImage} alt="/" className="w-full h-auto rounded-xl shadow-xl" />
+            <h1 className="absolute top-4 left-4 sm:top-10 sm:left-10 bg-[#145412CF] p-4 sm:p-10 rounded-tr-3xl text-white text-2xl sm:text-4xl font-bold z-10">Segera Buat Portofoliomu</h1>
+          </div>
+        </div>
+        <div className="min-h-screen flex items-center justify-center text-center">
+          <div className="text-lg font-medium text-gray-600">Memuat data portofolio...</div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (userTransactions.length === 0) {
+    return (
+      <>
+        <Navbar />
+        <div className={`${localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex justify-center py-8 px-4 sm:px-8 mb-12'}`}>
+          <div className="relative w-full max-w-6xl">
+            <img src={PortofolioImage} alt="/" className="w-full h-auto rounded-xl shadow-xl" />
+            <h1 className="absolute top-4 left-4 sm:top-10 sm:left-10 bg-[#145412CF] p-4 sm:p-10 rounded-tr-3xl text-white text-2xl sm:text-4xl font-bold z-10">Segera Buat Portofoliomu</h1>
+          </div>
+        </div>
+        <div className="min-h-screen flex items-center justify-center text-center">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-700 mb-2">Belum ada portofolio</h2>
+            <p className="text-gray-500">Anda belum memiliki transaksi investasi.</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  const { initialPrice, totalGoat, totalInvested, estimatedProfit, totalNow } = calculateInvestment(userTransactions);
+
+  const data = [
+    {
+      image: <img src={Money} alt="uang" className="w-10 h-10" />,
+      title: 'Jumlah uang sebelum investasi',
+      desc: numberFormatter.format(initialPrice),
+      note: '*jumlah uang saat investasi pertama',
+      deco: Decoration1
+    },
+    {
+      image: <img src={Goat} alt="kambing" className="w-10 h-10" />,
+      title: 'Jumlah kambing diinvestasikan',
+      desc: `${totalGoat} ekor`,
+      note: '*total transaksi investasi',
+      deco: Decoration2
+    },
+    {
+      image: <AiOutlineLineChart className="w-10 h-10 text-blue-500" />,
+      title: 'Perkiraan nilai saat ini',
+      desc: numberFormatter.format(totalNow),
+      note: '*perkiraan nilai berdasarkan investasi awal dan keuntungan',
+    },
+  ];
 
   return (
     <div>
-      {/* Navbar */}
       <Navbar />
 
       {/* Top Panel */}
-      <div className={localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex flex-row flex-nowrap justify-center py-8 space-x-12 mb-12'}>
-        <div className='w-fit flex justify-start items-end shadow-2xl'>
-          <img src={PortofolioImage} alt='/' />
-          <h1 className='bg-[#145412CF] p-10 rounded-tr-3xl text-white text-4xl font-bold absolute z-10'>Segera Buat Portofoliomu</h1>
+      <div className={`${localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex justify-center py-8 px-4 sm:px-8 mb-12'}`}>
+        <div className="relative w-full max-w-6xl">
+          <img src={PortofolioImage} alt="/" className="w-full h-auto rounded-xl shadow-xl" />
+          <h1 className="absolute top-4 left-4 sm:top-10 sm:left-10 bg-[#145412CF] p-4 sm:p-10 rounded-tr-3xl text-white text-2xl sm:text-4xl font-bold z-10">Segera Buat Portofoliomu</h1>
         </div>
       </div>
 
       {/* Content */}
-      <div className={localStorage.getItem('uid') === null ? 'hidden' : 'mx-16 grid grid-cols-4 gap-28 mb-4'}>
-        {/* Left Panel */}
-        <div className='col-span-1 grid grid-rows-4 gap-5'>
-          <div className='rounded-2xl bg-[#D6F6D5] px-4 pb-4 flex flex-col justify-between space-y-4 items-start relative overflow-hidden shadow-lg'>
-            <img src={Decoration1} alt='/' className='absolute right-0 mt-[-16px]' />
-            <div className='bg-[#145412] rounded-md p-2'>
-              <img src={Money} alt='/' />
-            </div>
-            <h3 className='text-black text-xl font-medium'>Jumlah uang sebelum investasi</h3>
-            <p className='text-[#666666] text-sm font-normal'>Rp. 7.000.000</p>
-            <p className='text-[#145412] text-sm font-normal w-4/5'>*jumlah uang saat investasi pertama</p>
-          </div>
-          <div className='rounded-2xl bg-[#D6F6D5] px-4 pb-4 flex flex-col justify-between space-y-4 items-start relative overflow-hidden shadow-lg'>
-            <img src={Decoration2} alt='/' className='absolute right-0 bottom-0' />
-            <div className='bg-[#145412] rounded-md p-2'>
-              <img src={Goat} alt='/' />
-            </div>
-            <h3 className='text-black text-xl font-medium'>Jumlah kambing yang dimiliki</h3>
-            <p className='text-[#666666] text-sm font-normal'>1 ekor</p>
-            <p className='text-[#145412] text-sm font-normal w-4/5'>Tambah investasi</p>
-          </div>
-          <div className='rounded-2xl bg-[#D6F6D5] px-4 pb-4 flex flex-col justify-between space-y-4 items-start relative overflow-hidden shadow-lg'>
-            <div src={Decoration2} alt='/' className='bg-transparent p-6 border-[20px] border-[#145412] absolute right-[-10%] top-[-10%] rounded-full' />
-            <div className='bg-[#145412] rounded-md p-2'>
-              <img src={Maintenance} alt='/' />
-            </div>
-            <h3 className='text-black text-xl font-medium'>Perawatan yang dipilih</h3>
-            <p className='text-[#666666] text-sm font-normal'>Perawatan bulanan kambing dewasa paket 1</p>
-            <p className='text-[#145412] text-sm font-normal w-4/5'>*akan ikut bertambah bersama kambing</p>
-          </div>
-          <div className='rounded-2xl bg-[#D6F6D5] px-4 pb-4 flex flex-col justify-between space-y-4 items-start relative overflow-hidden shadow-lg'>
-            <div src={Decoration2} alt='/' className='bg-transparent p-6 border-[20px] border-[#145412] absolute right-[-10%] bottom-[-10%] rounded-full' />
-            <div className='bg-[#145412] rounded-md p-2'>
-              <img src={Grass} alt='/' />
-            </div>
-            <h3 className='text-black text-xl font-medium'>Pakan yang dipilih</h3>
-            <p className='text-[#666666] text-sm font-normal'>Rumput 75%, hijauan kacangan 25% (200-250gr/ekor/hari</p>
-            <p className='text-[#145412] text-sm font-normal w-4/5'>*ikut bertambah besama kambing</p>
-          </div>
-        </div>
-        {/* Right Panel */}
-        <div className='col-span-3 flex flex-col items-center'>
-          <h1 className='text-black text-2xl font-bold mb-16'>Simulasi dan kalkulasi harga kambing per/3bulan</h1>
-          <div className='w-full flex-1 flex-col border-2 border-[#EBEBEB] rounded-xl px-[18px] py-14'>
-            <div className='flex flex-row justify-start space-x-8'>
-              <button onClick={() => setSpecialDay(true)} className={specialDay ? 'border-[#145412] border-2 px-5 py-[10px] text-[#145412] text-xl font-normal rounded-full' : 'border-[#C2C2C2] border-2 px-5 py-[10px] text-[#C2C2C2] text-xl font-normal rounded-full'}>Idul Adha</button>
-              <button onClick={() => setSpecialDay(false)} className={specialDay ? 'border-[#C2C2C2] border-2 px-5 py-[10px] text-[#C2C2C2] text-xl font-normal rounded-full' : 'border-[#145412] border-2 px-5 py-[10px] text-[#145412] text-xl font-normal rounded-full'}>Hari Biasa</button>
-            </div>
-            <div className='grid grid-cols-3 gap-6 mt-14'>
-              <p className='text-black text-xl font-normal'>Jumlah kambing :</p>
-              <div className='col-span-2 flex space-x-8'>
-                <button onClick={() => setQuantity(quantity-1)} disabled={quantity === 0} className='text-black text-xl font-normal'><AiOutlineMinus size={16} color='#000000' /></button>
-                <input type='number' value={quantity} onChange={(e) => e.target.value.length < 1 ? setQuantity(0) : setQuantity(parseInt(e.target.value))} pattern='0-9' className='w-20 outline-none border-2 border-[#C2C2C2] text-center p-2' />
-                <button onClick={() => setQuantity(quantity+1)} className='text-black text-xl font-normal'><AiOutlinePlus size={16} color='#000000' /></button>
+      <div className="px-4 sm:px-8 mb-4">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 xl:gap-12">
+          {/* Left Panel */}
+          <div className="grid grid-cols-1 gap-6">
+            {data.map((item, index) => (
+              <div key={index} className="rounded-2xl bg-[#D6F6D5] px-4 pb-4 pt-6 relative overflow-hidden shadow-lg flex flex-col space-y-4">
+                {item.deco && <img src={item.deco} alt="/" className="absolute right-0 bottom-0 w-16 opacity-20" />}
+                <div className="bg-[#145412] rounded-md p-2 w-fit">
+                  {item.image}
+                </div>
+                <h3 className="text-black text-base sm:text-xl font-medium">{item.title}</h3>
+                <p className="text-[#666666] text-sm">{item.desc}</p>
+                <p className="text-[#145412] text-sm w-4/5">{item.note}</p>
               </div>
-              <p className='text-black text-xl font-normal'>harga awal kambing :</p>
-              <p className='text-black text-xl font-normal col-span-2 '>Rp. {!specialDay ? numberFormatter.format(hargaAwal[1] * quantity).replaceAll(',', '.') : numberFormatter.format(hargaAwal[0] * quantity).replaceAll(',', '.')}</p>
-              <p className='text-black text-xl font-normal'>Kalkulasi :</p>
-              <div className='col-span-2'></div>
-              <p className='text-black text-xl font-normal text-right'>Bulan 1 :</p>
-              <p className='text-black text-xl font-normal col-span-2 '>Rp. {!specialDay ? numberFormatter.format(hargaBulan1[1] * quantity).replaceAll(',', '.') : numberFormatter.format(hargaBulan1[0] * quantity).replaceAll(',', '.')}</p>
-              <p className='text-black text-xl font-normal text-right'>Bulan 2 :</p>
-              <p className='text-black text-xl font-normal col-span-2 '>Rp. {!specialDay ? numberFormatter.format(hargaBulan2[1] * quantity).replaceAll(',', '.') : numberFormatter.format(hargaBulan2[0] * quantity).replaceAll(',', '.')}</p>
-              <p className='text-black text-xl font-normal text-right'>Bulan 3 :</p>
-              <p className='text-black text-xl font-normal col-span-2 '>Rp. {!specialDay ? numberFormatter.format(hargaBulan3[1] * quantity).replaceAll(',', '.') : numberFormatter.format(hargaBulan3[0] * quantity).replaceAll(',', '.')}</p>
-            </div>
-            <div className='flex-1 flex flex-col mt-12 items-start justify-center space-y-8'>
-              <p className='text-[#333333] text-base font-normal'>*jika melakukan investasi kambing 5 bulan sebelum idul adha, maka penjualan kambing akan mengikuti kalkulasi harga idul adha, dan keuntungan akan semakin besar. namun jika pembelian dan penjualan dilakukan pada hari selalin idul adha harga akan mengikuti harga hari biasa.</p>
-              <p className='text-[#218A1F] text-base font-normal'>*untuk bisa melihat kalkulasi harga pada hari biasa klik tombol hari biasa diatas</p>
+            ))}
+          </div>
+
+          {/* Right Panel */}
+          <div className="lg:col-span-3 flex flex-col items-center">
+            <h1 className='text-black text-lg sm:text-2xl font-bold mb-6 text-center'>Simulasi dan kalkulasi harga kambing per/3bulan</h1>
+            <div className='w-full border-2 border-[#EBEBEB] rounded-xl px-4 sm:px-6 py-10 sm:py-14'>
+              {/* Button for selecting special day */}
+              <div className='flex flex-wrap gap-4 justify-center sm:justify-start'>
+                <button
+                  onClick={() => setSpecialDay(true)}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-xl font-medium border-2 ${specialDay ? 'border-[#145412] text-[#145412]' : 'border-[#C2C2C2] text-[#C2C2C2]'}`}
+                >
+                  Idul Adha
+                </button>
+                <button
+                  onClick={() => setSpecialDay(false)}
+                  className={`px-4 py-2 rounded-full text-sm sm:text-xl font-medium border-2 ${!specialDay ? 'border-[#145412] text-[#145412]' : 'border-[#C2C2C2] text-[#C2C2C2]'}`}
+                >
+                  Hari Biasa
+                </button>
+              </div>
+
+              {/* Quantity and price calculations */}
+              <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 text-base sm:text-xl'>
+                <p className='font-medium'>Jumlah kambing :</p>
+                <div className='sm:col-span-2 flex items-center space-x-4'>
+                  <button
+                    onClick={() => setQuantity(quantity > 0 ? quantity - 1 : 0)}
+                    disabled={quantity === 0}
+                    className="disabled:opacity-50"
+                  >
+                    <AiOutlineMinus size={20} />
+                  </button>
+                  <input
+                    type='number'
+                    value={quantity}
+                    onChange={(e) => setQuantity(Math.max(0, parseInt(e.target.value) || 0))}
+                    className='w-20 border-2 text-center p-2 rounded-md'
+                  />
+                  <button onClick={() => setQuantity(quantity + 1)}>
+                    <AiOutlinePlus size={20} />
+                  </button>
+                </div>
+                {loadingPrices ? (
+                  <p>Memuat harga kambing...</p>
+                ) : (
+                  <>
+                    {/* Tombol +/- dan input quantity */}
+                  </>
+                )}
+
+                <p className='font-medium'>Harga awal kambing :</p>
+                <p className='sm:col-span-2'>
+                  Rp. {numberFormatter.format((specialDay ? hargaIdulAdha : hargaBiasa) * quantity).replaceAll(',', '.')}
+                </p>
+
+                {/* Di bagian map harga bulanan */}
+                {[hargaBulan1, hargaBulan2, hargaBulan3].map((harga, idx) => (
+                  <React.Fragment key={idx}>
+                    <p className='text-right'>Bulan {idx + 1} :</p>
+                    <p className='sm:col-span-2'>
+                      Rp. {numberFormatter.format((specialDay ? hargaIdulAdha : harga) * quantity).replaceAll(',', '.')}
+                    </p>
+                  </React.Fragment>
+                ))}
+              </div>
+
+              {/* Additional Info */}
+              <div className='mt-10 space-y-4 text-sm sm:text-base'>
+                <p className='text-[#333333]'>
+                  *jika melakukan investasi kambing 5 bulan sebelum idul adha, maka penjualan kambing akan mengikuti kalkulasi harga idul adha, dan keuntungan akan semakin besar. namun jika pembelian dan penjualan dilakukan pada hari selain idul adha harga akan mengikuti harga hari biasa.
+                </p>
+                <p className='text-[#218A1F]'>
+                  *untuk bisa melihat kalkulasi harga pada hari biasa klik tombol hari biasa diatas
+                </p>
+              </div>
             </div>
           </div>
+
         </div>
       </div>
 
-      {/* Invest Monitoring */}
-      {
-        localStorage.getItem('uid') === null
-          ? (<div className='w-full flex flex-col items-center space-y-4 px-4 mt-[90px] mb-16'>
-            <img src={NoPortofolio} alt='/' className='w-[45%]' />
-            <h1 className='text-black text-3xl font-extrabold'>Uppss! Kamu belum memiliki portofolio</h1>
-            <h1 className='text-[#474747] text-3xl font-medium'>Daftarkan akunmu terlebih dahulu untuk mulai berinvestasi</h1>
-            <button onClick={() => navigate('/login')} className='text-white text-sm font-medium bg-[#145412] p-4 rounded-[10px]'>Mulai Sekarang</button>
-          </div>)
-          : <InvestMonitoring />
-      }
+      {/* Tabel Detail Kepemilikan Kambing */}
+      {uid && (
+        <div className="mt-16">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Kepemilikan Kambing</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="py-2 px-4 border">No</th>
+                  <th className="py-2 px-4 border">Kode Kambing</th>
+                  <th className="py-2 px-4 border">Berat (kg)</th>
+                  <th className="py-2 px-4 border">Harga Investasi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userTransactions.map((trx, idx) => (
+                  <tr key={idx} className="text-center">
+                    <td className="py-2 px-4 border">{idx + 1}</td>
+                    <td className="py-2 px-4 border">{trx.goat?.code || `GOAT-${uid?.slice(0, 4).toUpperCase()}-${idx + 1}`}</td>
+                    <td className="py-2 px-4 border">{trx.goat?.weight ? `${trx.goat.weight} kg` : '-'}</td>
+                    <td className="py-2 px-4 border">
+                      Rp. {numberFormatter.format(trx.goat?.price || 0).replaceAll(',', '.')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
-      {/* Footer */}
+      {/* Invest Monitoring or No Portofolio */}
+      {uid === null ? (
+        <div className="w-full flex flex-col items-center space-y-4 px-4 mt-20 mb-16 text-center">
+          <img src={NoPortofolio} alt="/" className="w-full max-w-sm sm:max-w-md" />
+          <h1 className="text-black text-2xl sm:text-3xl font-extrabold">Uppss! Kamu belum memiliki portofolio</h1>
+          <h1 className="text-[#474747] text-lg sm:text-2xl font-medium">Daftarkan akunmu terlebih dahulu untuk mulai berinvestasi</h1>
+        </div>
+      ) : (
+        <InvestMonitoring transactions={userTransactions} />
+      )}
+
       <Footer />
     </div>
   );
-}
+};
 
 export default Portofolio;

@@ -91,7 +91,7 @@ export const getAllUser = () => {
     get(userData).then((snapshot) => {
       const result = [];
       snapshot.forEach(element => {
-        result.push({uid: element.key, ...element.val()});
+        result.push({ uid: element.key, ...element.val() });
       });
       resolve(result);
     }).catch((error) => reject(error));
@@ -229,7 +229,11 @@ export const newTransaction = (theGoat, theFood, theMaintenance, uid) => {
       goat: theGoat,
       food: theFood,
       maintenance: theMaintenance,
-      user: uid,
+      user: uid, 
+      created_by: {
+        uid: uid,
+        name: localStorage.getItem('name') || 'Unknown', 
+      },
       confirmed: false,
       created_at: timeNow.getTime(),
     }).then((snapshot) => {
@@ -237,6 +241,7 @@ export const newTransaction = (theGoat, theFood, theMaintenance, uid) => {
     }).catch((error) => reject(error));
   });
 }
+
 
 // Get Transaction
 export const getTransaction = (uid) => {
@@ -279,7 +284,7 @@ export const getAdmin = () => {
     get(query(ref(database, usersRef), orderByChild('role'), equalTo('admin'))).then((snapshot) => {
       let data = {};
       snapshot.forEach(element => {
-        data = { uid: element.key, ...element.val()};
+        data = { uid: element.key, ...element.val() };
       });
       resolve(data);
     }).catch((error) => reject(error));

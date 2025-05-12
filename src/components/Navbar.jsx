@@ -5,12 +5,31 @@ import { signOutUser } from '../functions/Auth';
 import Logo from '../assets/logo.png';
 import SignOutPicture from '../assets/signout.png';
 
+const pages = [
+  { title: 'Investasi', path: '/investasi' },
+  { title: 'Portofolio', path: '/portofolio' },
+  { title: 'Breeding', path: '/breeding' },
+  { title: 'Artikel', path: '/artikel' },
+  { title: 'Profil', path: '/profil' },
+  { title: 'Admin', path: '/admin' },
+  { title: 'Pengguna', path: '/pengguna' },
+  { title: 'Kambing', path: '/kambing' },
+  { title: 'Pakan', path: '/pakan' },
+  { title: 'Perawatan', path: '/perawatan' },
+  { title: 'Paket', path: '/paket' },
+  { title: 'Transaksi', path: '/transaksi' },
+  { title: 'Transaksi Paket', path: '/trans_paket' },
+  { title: 'Profil Admin', path: '/profil_admin' },
+];
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('');
   const [visibleModal, setVisibleModal] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isPortfolioOpen, setIsPortfolioOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     const name = localStorage.getItem('name') || '';
@@ -27,6 +46,35 @@ const Navbar = () => {
     navigate(path);
     setIsMenuOpen(false);
     setIsPortfolioOpen(false);
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery) return;
+
+    const match = pages.find(page =>
+      page.title.toLowerCase() === searchQuery.trim().toLowerCase()
+    );
+
+    if (match) {
+      navigate(match.path);
+    } else {
+      navigate(`/search?query=${encodeURIComponent(searchQuery)}`);
+    }
+
+    setSearchQuery('');
+    setSuggestions([]);
+    setIsMenuOpen(false);
+  };
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+
+    const filtered = pages.filter(page =>
+      page.title.toLowerCase().includes(value.toLowerCase())
+    );
+    setSuggestions(filtered);
   };
 
   const renderButton = () => {
@@ -72,7 +120,6 @@ const Navbar = () => {
   return (
     <nav className="w-full bg-[#FCFCFC] shadow-md z-50 fixed top-0 left-0 right-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[90px] flex justify-between items-center">
-        {/* Logo */}
         <div>
           <img
             src={Logo}
@@ -80,6 +127,42 @@ const Navbar = () => {
             className="w-16 sm:w-20 h-auto cursor-pointer"
             onClick={() => handleNavigate('/')}
           />
+        </div>
+
+        {/* Desktop Search */}
+        <div className="relative hidden sm:flex items-center space-x-2">
+          <form onSubmit={handleSearch} className="flex items-center">
+            <input
+              type="text"
+              placeholder="Cari fitur..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="px-3 py-2 border rounded-l-md text-sm text-gray-700 focus:outline-none"
+            />
+            <button
+              type="submit"
+              className="bg-[#145412] text-white px-4 py-2 rounded-r-md text-sm"
+            >
+              Cari
+            </button>
+          </form>
+          {suggestions.length > 0 && (
+            <ul className="absolute top-full mt-1 w-full bg-white border rounded-md shadow z-50">
+              {suggestions.map((item, idx) => (
+                <li
+                  key={idx}
+                  onClick={() => {
+                    navigate(item.path);
+                    setSuggestions([]);
+                    setSearchQuery('');
+                  }}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                >
+                  {item.title}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -96,7 +179,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Navigation Links */}
         <ul
           className={`${
             isMenuOpen ? 'flex' : 'hidden'
@@ -111,7 +193,6 @@ const Navbar = () => {
             Investasi
           </li>
 
-          {/* Dropdown Portofolio */}
           <li className="relative">
             <button
               className={`font-semibold text-base sm:text-lg cursor-pointer ${
@@ -142,15 +223,49 @@ const Navbar = () => {
             Breeding
           </li>
 
-          {/* Tombol login/logout */}
+          {/* Mobile Search */}
+          <li className="sm:hidden px-2 relative">
+            <form onSubmit={handleSearch} className="flex items-center w-full">
+              <input
+                type="text"
+                placeholder="Cari fitur..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="w-full px-3 py-2 border rounded-l-md text-sm text-gray-700 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-[#145412] text-white px-4 py-2 rounded-r-md text-sm"
+              >
+                Cari
+              </button>
+            </form>
+            {suggestions.length > 0 && (
+              <ul className="absolute top-full mt-1 w-full bg-white border rounded-md shadow z-50">
+                {suggestions.map((item, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => {
+                      navigate(item.path);
+                      setSuggestions([]);
+                      setSearchQuery('');
+                      setIsMenuOpen(false);
+                    }}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  >
+                    {item.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+
           <li className="sm:hidden">{renderButton()}</li>
         </ul>
 
-        {/* Desktop login/logout */}
         <div className="hidden sm:block">{renderButton()}</div>
       </div>
 
-      {/* Modal Logout */}
       <Modal
         isOpen={visibleModal}
         onRequestClose={() => setVisibleModal(false)}

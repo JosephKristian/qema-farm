@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "qm-qemafarm"
-  }
+    "default": "qm-qemafarm",
+    "production": "qema-farm-15c45"
+  },
+  "targets": {},
+  "etags": {}
 }

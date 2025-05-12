@@ -95,7 +95,9 @@ const PackageTransaction = () => {
                 {
                   state.map((element, index) => (
                     <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
-                      <td className='border border-slate-200 p-2 text-[#333333]'>{element.key}</td>
+                      <td className='border border-slate-200 p-2 text-[#333333] max-w-[160px] truncate' title={element.uid}>
+                        {element.key}
+                      </td>
                       <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
                       <td className='border border-slate-200 p-2 text-[#EA341B] capitalize'>
                         <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-2'>

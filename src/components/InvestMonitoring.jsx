@@ -25,7 +25,7 @@ const InvestMonitoring = () => {
 
         {/* Right Section with Video */}
         <div className="flex flex-col justify-center items-center lg:items-start">
-          <div className="aspect-w-16 aspect-h-9 w-full lg:w-[80%] mx-auto">
+          <div className="aspect-w-16 aspect-h-9 w-full lg:w-[80%] mx-auto h-[500px]">
             <iframe
               src="https://www.youtube.com/embed/-zM9Szhww_I"
               title="YouTube video player"
