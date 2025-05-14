@@ -111,8 +111,8 @@ const Breeding = () => {
     return choosenOption == null
       ? (
         <div className='col-span-2 bg-[#D6F6D5] flex flex-col space-y-4 items-center justify-center px-20 py-16'>
-          <p className='text-center text-[#5C5C5C] text-sm'>belum ada paket breeding yang dipilih</p>
-          <p className='text-center text-[#333333] text-sm'>untuk dapat memilih paket breeding, kamu harus memilih  paket yang kamu inginkan dibawah dan tekan tombol  transaksi</p>
+          <p className='text-center text-[#5C5C5C] text-sm'>Belum Ada Paket Breeding Yang Dipilih</p>
+          <p className='text-center text-[#333333] text-sm'>untuk dapat memilih paket breeding, kamu harus memilih  paket yang kamu inginkan di bawah dan tekan tombol  transaksi</p>
         </div>
       ) : (
         <div className='col-span-2 bg-[#D6F6D5] flex flex-col space-y-8 justify-between px-8 py-6'>
@@ -134,7 +134,7 @@ const Breeding = () => {
 
       {/* Top Panel */}
       <div className='gradient-green-white w-full pt-8 px-6 mb-16 overflow-hidden relative'>
-        <div className='flex flex-col space-y-5 absolute top-[60px] left-[16px] sm:left-[64px]'>
+        <div className='flex flex-col space-y-5 absolute top-[100px] sm:top-[120px] left-[16px] sm:left-[64px]'>
           <h1 className='text-black text-[30px] sm:text-[40px] font-bold max-w-[832px] relative'>
             Perbanyak kambingmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMAFARM</span>
           </h1>
@@ -156,7 +156,7 @@ const Breeding = () => {
           <img src={Breeding2} alt='/' className='rounded-t-full' />
         </div>
         <div className='col-span-2 flex flex-col space-y-6'>
-          <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu disini</h1>
+          <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu di sini</h1>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
             {rendered_choosen()}
           </div>

@@ -129,42 +129,6 @@ const Navbar = () => {
           />
         </div>
 
-        {/* Desktop Search */}
-        <div className="relative hidden sm:flex items-center space-x-2">
-          <form onSubmit={handleSearch} className="flex items-center">
-            <input
-              type="text"
-              placeholder="Cari fitur..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="px-3 py-2 border rounded-l-md text-sm text-gray-700 focus:outline-none"
-            />
-            <button
-              type="submit"
-              className="bg-[#145412] text-white px-4 py-2 rounded-r-md text-sm"
-            >
-              Cari
-            </button>
-          </form>
-          {suggestions.length > 0 && (
-            <ul className="absolute top-full mt-1 w-full bg-white border rounded-md shadow z-50">
-              {suggestions.map((item, idx) => (
-                <li
-                  key={idx}
-                  onClick={() => {
-                    navigate(item.path);
-                    setSuggestions([]);
-                    setSearchQuery('');
-                  }}
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
-                >
-                  {item.title}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
         {/* Mobile menu button */}
         <div className="sm:hidden">
           <button
@@ -180,14 +144,12 @@ const Navbar = () => {
         </div>
 
         <ul
-          className={`${
-            isMenuOpen ? 'flex' : 'hidden'
-          } sm:flex flex-col sm:flex-row absolute sm:static top-[90px] left-0 w-full sm:w-auto bg-[#FCFCFC] sm:bg-transparent z-40 sm:z-auto px-4 sm:px-0 py-4 sm:py-0 space-y-4 sm:space-y-0 sm:space-x-8`}
+          className={`${isMenuOpen ? 'flex' : 'hidden'
+            } sm:flex flex-col sm:flex-row absolute sm:static top-[90px] left-0 w-full sm:w-auto bg-[#FCFCFC] sm:bg-transparent z-40 sm:z-auto px-4 sm:px-0 py-4 sm:py-0 space-y-4 sm:space-y-0 sm:space-x-8`}
         >
           <li
-            className={`font-semibold text-base sm:text-lg cursor-pointer ${
-              path.includes('/investasi') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
-            }`}
+            className={`font-semibold text-base sm:text-lg cursor-pointer ${path.includes('/investasi') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
+              }`}
             onClick={() => handleNavigate('/investasi')}
           >
             Investasi
@@ -195,33 +157,58 @@ const Navbar = () => {
 
           <li className="relative">
             <button
-              className={`font-semibold text-base sm:text-lg cursor-pointer ${
-                path.includes('/portofolio') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
-              }`}
-              onClick={() => setIsPortfolioOpen(!isPortfolioOpen)}
+              className={`font-semibold text-base sm:text-lg cursor-pointer ${path.includes('/portofolio') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
+                }`}
+              onClick={() => handleNavigate('/portofolio')}
             >
-              Portofolio ▾
+              Portofolio
             </button>
-            {isPortfolioOpen && (
-              <ul className="absolute sm:absolute bg-white rounded shadow-md mt-2 py-2 w-[180px] z-50">
-                <li
-                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleNavigate('/portofolio')}
-                >
-                  Detail Portofolio
-                </li>
-              </ul>
-            )}
+
           </li>
 
           <li
-            className={`font-semibold text-base sm:text-lg cursor-pointer ${
-              path.includes('/breeding') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
-            }`}
+            className={`font-semibold text-base sm:text-lg cursor-pointer ${path.includes('/breeding') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
+              }`}
             onClick={() => handleNavigate('/breeding')}
           >
             Breeding
           </li>
+
+          {/* Desktop Search */}
+          <div className="relative hidden sm:flex items-center space-x-2">
+            <form onSubmit={handleSearch} className="flex items-center">
+              <input
+                type="text"
+                placeholder="Cari fitur..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="px-3 py-2 border rounded-l-md text-sm text-gray-700 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="bg-[#145412] text-white px-4 py-2 rounded-r-md text-sm"
+              >
+                Cari
+              </button>
+            </form>
+            {suggestions.length > 0 && (
+              <ul className="absolute top-full mt-1 w-full bg-white border rounded-md shadow z-50">
+                {suggestions.map((item, idx) => (
+                  <li
+                    key={idx}
+                    onClick={() => {
+                      navigate(item.path);
+                      setSuggestions([]);
+                      setSearchQuery('');
+                    }}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+                  >
+                    {item.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
 
           {/* Mobile Search */}
           <li className="sm:hidden px-2 relative">

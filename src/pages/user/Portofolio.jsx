@@ -211,7 +211,7 @@ const Portofolio = () => {
 
           {/* Right Panel */}
           <div className="lg:col-span-3 flex flex-col items-center">
-            <h1 className='text-black text-lg sm:text-2xl font-bold mb-6 text-center'>Simulasi dan kalkulasi harga kambing per/3bulan</h1>
+            <h1 className='text-black text-lg sm:text-2xl font-bold mb-6 text-center'>Simulasi dan kalkulasi harga ternak per/3bulan</h1>
             <div className='w-full border-2 border-[#EBEBEB] rounded-xl px-4 sm:px-6 py-10 sm:py-14'>
               {/* Button for selecting special day */}
               <div className='flex flex-wrap gap-4 justify-center sm:justify-start'>
@@ -231,7 +231,7 @@ const Portofolio = () => {
 
               {/* Quantity and price calculations */}
               <div className='grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10 text-base sm:text-xl'>
-                <p className='font-medium'>Jumlah kambing :</p>
+                <p className='font-medium'>Jumlah Ternak :</p>
                 <div className='sm:col-span-2 flex items-center space-x-4'>
                   <button
                     onClick={() => setQuantity(quantity > 0 ? quantity - 1 : 0)}
@@ -251,14 +251,14 @@ const Portofolio = () => {
                   </button>
                 </div>
                 {loadingPrices ? (
-                  <p>Memuat harga kambing...</p>
+                  <p>Memuat harga ternak...</p>
                 ) : (
                   <>
                     {/* Tombol +/- dan input quantity */}
                   </>
                 )}
 
-                <p className='font-medium'>Harga awal kambing :</p>
+                <p className='font-medium'>Harga Awal Ternak :</p>
                 <p className='sm:col-span-2'>
                   Rp. {numberFormatter.format((specialDay ? hargaIdulAdha : hargaBiasa) * quantity).replaceAll(',', '.')}
                 </p>
@@ -277,7 +277,7 @@ const Portofolio = () => {
               {/* Additional Info */}
               <div className='mt-10 space-y-4 text-sm sm:text-base'>
                 <p className='text-[#333333]'>
-                  *jika melakukan investasi kambing 5 bulan sebelum idul adha, maka penjualan kambing akan mengikuti kalkulasi harga idul adha, dan keuntungan akan semakin besar. namun jika pembelian dan penjualan dilakukan pada hari selain idul adha harga akan mengikuti harga hari biasa.
+                  *jika melakukan investasi ternak 5 bulan sebelum Idul Adha, maka penjualan ternak akan mengikuti kalkulasi harga Idul Adha, dan keuntungan akan semakin besar. namun jika pembelian dan penjualan dilakukan pada hari selain Idul Adha harga akan mengikuti harga hari biasa.
                 </p>
                 <p className='text-[#218A1F]'>
                   *untuk bisa melihat kalkulasi harga pada hari biasa klik tombol hari biasa diatas
@@ -292,13 +292,13 @@ const Portofolio = () => {
       {/* Tabel Detail Kepemilikan Kambing */}
       {uid && (
         <div className="mt-16">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Kepemilikan Kambing</h2>
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Kepemilikan Ternak</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
               <thead className="bg-gray-100">
                 <tr>
                   <th className="py-2 px-4 border">No</th>
-                  <th className="py-2 px-4 border">Kode Kambing</th>
+                  <th className="py-2 px-4 border">Kode Ternak</th>
                   <th className="py-2 px-4 border">Berat (kg)</th>
                   <th className="py-2 px-4 border">Harga Investasi</th>
                 </tr>

@@ -289,63 +289,65 @@ const Package = () => {
                   <th className='bg-gray-600 border border-white py-4 px-2'>Pakan</th>
                   <th className='bg-gray-600 border border-white py-4 px-2'>Perawatan</th>
                   <th className='bg-gray-600 border border-white py-4 px-2'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>Aksi</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2 w-[220px]'>Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 {
-                  packageRed.filter(e => e.name.toLowerCase().includes(search.toLowerCase().trim())).map((element, index) => (
-                    <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
-                        {element.goat.name} {element.goat.sex} ({element.goat.type})
-                      </td>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.food.name}</td>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
-                      <td className='border border-slate-200 p-2 text-[#b31818] capitalize'>
-                        Rp.{' '}
-                        <span className={element.discount_price !== 0
-                          ? 'line-through text-[#333333] font-normal'
-                          : 'text-[#b31818] text-base font-medium'}>
-                          {format.format(element.price).replaceAll(',', '.')}
-                        </span>{' '}
-                        <span className='text-[#b31818] text-base font-semibold'>
-                          {element.discount_price !== 0 ? format.format(element.discount_price).replaceAll(',', '.') : ''}
-                        </span>
-                      </td>
-                      <td className='border border-slate-200 p-2'>
-                        <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
-                          <button
-                            onClick={() => {
-                              setPackageSelected(element);
-                              setDetailPackageModal(true);
-                            }}
-                            className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
-                          >
-                            Detail
-                          </button>
-                          <button
-                            onClick={() => {
-                              setPackageSelected(element);
-                              setEditPackageModal(true);
-                            }}
-                            className='bg-[#145412] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
-                          >
-                            Ubah
-                          </button>
-                          <button
-                            onClick={() => {
-                              setPackageSelected(element);
-                              setDeletePackageModal(true);
-                            }}
-                            className='bg-[#b31818] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
-                          >
-                            Hapus
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  packageRed
+                    .filter(e => e.name.toLowerCase().includes(search.toLowerCase().trim()))
+                    .map((element, index) => (
+                      <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
+                        <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
+                        <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
+                          {element.goat.name} {element.goat.sex} ({element.goat.type})
+                        </td>
+                        <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.food.name}</td>
+                        <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.maintenance.name}</td>
+                        <td className='border border-slate-200 p-2 text-[#b31818] capitalize'>
+                          Rp.{' '}
+                          <span className={element.discount_price !== 0
+                            ? 'line-through text-[#333333] font-normal'
+                            : 'text-[#b31818] text-base font-medium'}>
+                            {format.format(element.price).replaceAll(',', '.')}
+                          </span>{' '}
+                          <span className='text-[#b31818] text-base font-semibold'>
+                            {element.discount_price !== 0 ? format.format(element.discount_price).replaceAll(',', '.') : ''}
+                          </span>
+                        </td>
+                        <td className='border border-slate-200 p-2 w-[220px]'>
+                          <div className='flex flex-wrap gap-2 justify-start'>
+                            <button
+                              onClick={() => {
+                                setPackageSelected(element);
+                                setDetailPackageModal(true);
+                              }}
+                              className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
+                            >
+                              Detail
+                            </button>
+                            <button
+                              onClick={() => {
+                                setPackageSelected(element);
+                                setEditPackageModal(true);
+                              }}
+                              className='bg-[#145412] rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
+                            >
+                              Ubah
+                            </button>
+                            <button
+                              onClick={() => {
+                                setPackageSelected(element);
+                                setDeletePackageModal(true);
+                              }}
+                              className='bg-[#b31818] rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))
                 }
               </tbody>
             </table>

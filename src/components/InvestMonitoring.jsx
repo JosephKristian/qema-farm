@@ -19,7 +19,7 @@ const InvestMonitoring = () => {
             Monitoring Investasimu
           </h1>
           <p className="text-sm md:text-base lg:text-xl text-white max-w-md mx-auto lg:mx-0">
-            Monitoring pertumbuhan dan perkembangan kambingmu secara realtime melalui video CCTV yang telah kami siapkan disamping.
+            Monitoring pertumbuhan dan perkembangan kambingmu secara realtime melalui video CCTV yang telah kami siapkan di samping.
           </p>
         </div>
 

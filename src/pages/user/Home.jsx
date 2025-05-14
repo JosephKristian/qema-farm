@@ -244,7 +244,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
         <div className='flex-1 flex flex-col items-start text-white'>
           <h1 className='lg:text-6xl md:text-4xl sm:text-4xl mb-6 font-bold'>SELAMAT DATANG DI QEMAFARM!</h1>
           <div className='flex border-l-[#FCD403] border-l-[10px] pl-4 lg:text-base text-sm'>
-            <p>QEMAFARM membantu anda untuk dapat berinvestasi  di sektor rill secara mudah dan terpercaya. dapatkan mabing investasimu di sini, dan dapatkan kekuntungan maksismal bersama kami!</p>
+            <p>QEMA FARM membantu anda untuk dapat berinvestasi  di sektor rill secara mudah dan terpercaya. dapatkan mabing investasimu di sini, dan dapatkan kekuntungan maksismal bersama kami!</p>
           </div>
           <button onClick={() => navigate('investasi')} className='mt-6 py-2 px-6 bg-[#FCD403] rounded-tl-2xl rounded-br-2xl text-[#021701] font-semibold md:text-base text-sm'>Mulai Sekarang</button>
         </div>
@@ -261,7 +261,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
             setVisibleModal(true);
           }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
             <img src={Goat} alt='/' className='w-7 h-7' />
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>jenis kambing</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>Jenis kambing</p>
             <p className='font-semibold text-[16px] text-[#333333] text-center'>{goats.length}</p>
           </div>
           <div onClick={() => {
@@ -269,7 +269,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
             setVisibleModal(true);
           }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
             <img src={Plant} alt='/' className='w-7 h-7' />
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>jenis pakan</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>Jenis pakan</p>
             <p className='font-semibold text-[16px] text-[#333333] text-center'>{foods.length}</p>
           </div>
           <div onClick={() => {
@@ -286,12 +286,12 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
        {/* Graphic of Traffic Market */}
       <div className='flex flex-col items-center mb-24'>
         <div className='w-full border-l-[64px] border-l-[#218A1F] sm:text-[26px] text-xl font-bold text-[#218A1F] pl-8 mb-6'>
-          <p>Pergerakan Harga Jual Kambing per desember</p>
+          <p>Pergerakan Harga Jual Kambing Per Desember</p>
           <p>2022</p>
         </div>
         <div className='flex flex-col lg:w-[896px] w-full sm:mx-8 mx-2 p-7 bg-white shadow-md'>
           <p className='mb-4 font-medium sm:text-lg text-base text-black'>HARGA TERTINGGI</p>
-          <h3 className='mb-8 font-medium sm:text-2xl text-xl text-black'>35jt</h3>
+          <h3 className='mb-8 font-medium sm:text-2xl text-xl text-black'>Rp. 35.000.000</h3>
           <p className='mb-6 font-medium sm:text-lg text-[#4F4F4F]'>Etawa jantan</p>
           <div className='w-full h-60vh'>
             <Bar data={data} options={{

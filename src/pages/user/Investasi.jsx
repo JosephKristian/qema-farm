@@ -218,7 +218,7 @@ const Investasi = () => {
             <div className='w-[200px] h-[400px] bg-[#FDE568] rounded-full mr-[-80px] mt-[-230px] z-10' />
             <div className='w-[200px] h-[400px] bg-[#FCD403] rounded-full mr-[-100px] mt-[-180px]' />
           </div>
-          <h1 className='lg:w-[780px] md:w-[640px] text-center font-bold text-white text-5xl w-full px-10'>PILIH KAMBING INVESTASIMU SEKARANG JUGA!</h1>
+          <h1 className='lg:w-[780px] md:w-[640px] text-center font-bold text-white text-5xl w-full px-10'>PILIH TERNAK INVESTASIMU SEKARANG JUGA!</h1>
           <div className='w-full flex flex-row items-end justify-start'>
             <div className='w-[200px] h-[400px] bg-[#FCD403] rounded-full ml-[-100px] mb-[-200px]' />
             <div className='w-[200px] h-[400px] bg-[#FDE568] rounded-full ml-[-80px] mb-[-250px] z-10' />
@@ -234,7 +234,7 @@ const Investasi = () => {
         {/* Invest Result */}
         <div className='w-full lg:h-[50vh] h-fit grid grid-cols-4 mb-12'>
           <div className='flex-1 flex flex-col items-center justify-center p-4 border-r-2 border-r-[#999999]'>
-            <p className='text-md font-normal text-black text-center'>kamu bisa memilih jenis kambing, jenis pakan dan jenis perawatan  di tabel ini</p>
+            <p className='text-md font-normal text-black text-center'>kamu bisa memilih jenis ternak, jenis pakan dan jenis perawatan  di tabel ini</p>
             <button onClick={() => {
               if (localStorage.getItem('uid') === null) {
                 setNoAccountModal(true);
@@ -266,7 +266,7 @@ const Investasi = () => {
                   </div>
                 ) : (
                   <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis kambingmu</p>
+                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis ternakmu</p>
                     <button disabled className='bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4'>Pilih</button>
                   </div>
                 )
@@ -286,7 +286,7 @@ const Investasi = () => {
                 )
                 : (
                   <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis pakan kambingmu</p>
+                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis pakan ternakmu</p>
                     <button disabled className={confirmGoat ? 'bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4' : 'hidden'}>Pilih</button>
                   </div>
                 )
@@ -306,7 +306,7 @@ const Investasi = () => {
                 )
                 : (
                   <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis perawatan kambingmu</p>
+                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis perawatan ternakmu</p>
                     <button disabled className={confirmFood ? 'bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4' : 'hidden'}>Pilih</button>
                   </div>
                 )

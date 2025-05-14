@@ -249,7 +249,7 @@ const Goat = () => {
 
           {/* Tabel Container dengan Scroll Horizontal */}
           <div className='w-full py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md overflow-x-auto'>
-            <table className="bg-white w-full min-w-[700px] table-fixed border-collapse border text-sm">
+            <table className="bg-white w-full min-w-[900px] table-fixed border-collapse border text-sm">
               <thead>
                 <tr className='text-white text-xs sm:text-sm md:text-base'>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Kambing</th>
@@ -257,7 +257,7 @@ const Goat = () => {
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Berat per Waktu</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Jenis Kelamin</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Aksi</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4 w-[220px]'>Aksi</th>
                 </tr>
               </thead>
               <tbody>
@@ -271,14 +271,14 @@ const Goat = () => {
                         <td className='border border-slate-200 p-2 text-[#333333]'>{element.weight} kg / {element.time} bulan</td>
                         <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.sex}</td>
                         <td className='border border-slate-200 p-2 text-[#EA341B] font-medium capitalize'>Rp. {element.price.toLocaleString().replaceAll(',', '.')}</td>
-                        <td className='border border-slate-200 p-2'>
-                          <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
+                        <td className='border border-slate-200 p-2 w-[220px]'>
+                          <div className='flex flex-wrap gap-2 justify-start'>
                             <button
                               onClick={() => {
                                 setGoatSelected(element);
                                 setDetailGoatModal(true);
                               }}
-                              className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                              className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
                             >
                               Detail
                             </button>
@@ -287,7 +287,7 @@ const Goat = () => {
                                 setGoatSelected(element);
                                 setEditGoatModal(true);
                               }}
-                              className='bg-[#145412] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                              className='bg-[#145412] rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
                             >
                               Ubah
                             </button>
@@ -296,7 +296,7 @@ const Goat = () => {
                                 setGoatSelected(element);
                                 setDeleteGoatModal(true);
                               }}
-                              className='bg-[#b31818] rounded-lg text-white px-4 py-2 w-full sm:w-auto text-xs sm:text-sm'
+                              className='bg-[#b31818] rounded-lg text-white px-3 py-2 text-xs sm:text-sm whitespace-nowrap'
                             >
                               Hapus
                             </button>
