@@ -135,10 +135,10 @@ const Breeding = () => {
       {/* Top Panel */}
       <div className='gradient-green-white w-full pt-8 px-6 mb-16 overflow-hidden relative'>
         <div className='flex flex-col space-y-5 absolute top-[100px] sm:top-[120px] left-[16px] sm:left-[64px]'>
-          <h1 className='text-black text-[30px] sm:text-[40px] font-bold max-w-[832px] relative'>
+          <h1 className='text-black text-[30px] sm:text-[40px] font-bold max-w-[832px] relative tour-breeding-header'>
             Perbanyak kambingmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMAFARM</span>
           </h1>
-          <p className='font-inter text-[#333333] text-base sm:text-xl font-normal max-w-[420px] relative'>
+          <p className='font-inter text-[#333333] text-base sm:text-xl font-normal max-w-[420px] relative tour-breeding-description'>
             QEMAFARM memberikan jasa breeding untuk kamu yang berinvestasi dengan kami, bersama dengan perawatan, dll.
           </p>
         </div>
@@ -157,11 +157,11 @@ const Breeding = () => {
         </div>
         <div className='col-span-2 flex flex-col space-y-6'>
           <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu di sini</h1>
-          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 tour-breeding-chosen'>
             {rendered_choosen()}
           </div>
           <div>
-            <button onClick={() => buyPackage()} className={choosenOption == null ? 'hidden' : 'text-white text-xl font-semibold px-[15px] py-[10px] bg-[#145412B2] rounded-[10px]'}>
+            <button onClick={() => buyPackage()} className={choosenOption == null ? 'hidden' : 'text-white text-xl font-semibold px-[15px] py-[10px] bg-[#145412B2] rounded-[10px] tour-breeding-transaction-button'}>
               Transaksi
             </button>
           </div>
@@ -175,7 +175,7 @@ const Breeding = () => {
           <div className='flex items-center justify-center bg-[#EDF2FA] rounded-xl w-full py-6'>
             <h2 className='text-black text-[20px] sm:text-[26px] font-semibold text-center'>Apa yang kamu dapat?</h2>
           </div>
-          <div className='flex flex-col justify-between space-y-4 bg-white rounded-xl w-full px-4 py-4'>
+          <div className='flex flex-col justify-between space-y-4 bg-white rounded-xl w-full px-4 py-4 tour-breeding-benefit'>
             {[
               "Jasa breeding",
               "Perawatan berkala (vitamin, pakan breeding, pengecekan dokter hewan)",
@@ -191,7 +191,7 @@ const Breeding = () => {
         </div>
 
         {/* Packet Options */}
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 w-full'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 w-full tour-breeding-options'>
           {rendered_option()}
         </div>
       </div>

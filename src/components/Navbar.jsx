@@ -118,7 +118,7 @@ const Navbar = () => {
   const path = window.location.pathname;
 
   return (
-    <nav className="w-full bg-[#FCFCFC] shadow-md z-50 fixed top-0 left-0 right-0">
+    <nav className="w-full bg-[#FCFCFC] shadow-md z-50 fixed top-0 left-0 right-0 tour-nav">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[90px] flex justify-between items-center">
         <div>
           <img

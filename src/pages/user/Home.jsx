@@ -26,7 +26,9 @@ import GoatWhite from '../../assets/goat-white.png';
 import Maintenance from '../../assets/maintenance.png';
 import Grass from '../../assets/grass.png';
 
+
 const Home = () => {
+
   const navigate = useNavigate();
   const [visibleModal, setVisibleModal] = useState(false);
   const [goatContent, setGoatContent] = useState(false);
@@ -237,10 +239,10 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
   return (
     <div>
       {/* Navbar */}
-      <Navbar />
+        <Navbar />
 
       {/* Top Panel */}
-      <div className='gradient-green-yellow h-[86vh] w-full rounded-b-[40%] flex sm:flex-row flex-col-reverse items-center sm:px-16 px-8 pt-4 pb-[10vh]'>
+      <div className='gradient-green-yellow h-[86vh] w-full rounded-b-[40%] flex sm:flex-row flex-col-reverse items-center sm:px-16 px-8 pt-4 pb-[10vh] tour-dashboard'>
         <div className='flex-1 flex flex-col items-start text-white'>
           <h1 className='lg:text-6xl md:text-4xl sm:text-4xl mb-6 font-bold'>SELAMAT DATANG DI QEMAFARM!</h1>
           <div className='flex border-l-[#FCD403] border-l-[10px] pl-4 lg:text-base text-sm'>
@@ -259,15 +261,15 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           <div onClick={() => {
             setGoatContent(true);
             setVisibleModal(true);
-          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
+          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer tour-goat'>
             <img src={Goat} alt='/' className='w-7 h-7' />
-            <p className='font-semibold text-[16px] text-[#333333] text-center'>Jenis kambing</p>
+            <p className='font-semibold text-[16px] text-[#333333] text-center'>Jenis ternak</p>
             <p className='font-semibold text-[16px] text-[#333333] text-center'>{goats.length}</p>
           </div>
           <div onClick={() => {
             setFoodContent(true);
             setVisibleModal(true);
-          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
+          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer tour-food'>
             <img src={Plant} alt='/' className='w-7 h-7' />
             <p className='font-semibold text-[16px] text-[#333333] text-center'>Jenis pakan</p>
             <p className='font-semibold text-[16px] text-[#333333] text-center'>{foods.length}</p>
@@ -275,7 +277,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
           <div onClick={() => {
             setMaintenanceContent(true);
             setVisibleModal(true);
-          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer'>
+          }} className='w-36 m-4 bg-[#EBF7EA] py-6 px-4 flex flex-col space-y-5 items-center rounded-lg cursor-pointer tour-maintenance'>
             <img src={Task} alt='/' className='w-7 h-7' />
             <p className='font-semibold text-[16px] text-[#333333] text-center'>perawatan</p>
             <p className='font-semibold text-[16px] text-[#333333] text-center'>{maintenances.length}</p>
@@ -283,10 +285,10 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
         </div>
       </div>
 
-       {/* Graphic of Traffic Market */}
-      <div className='flex flex-col items-center mb-24'>
+      {/* Graphic of Traffic Market */}
+      <div className='flex flex-col items-center mb-24 tour-chart'>
         <div className='w-full border-l-[64px] border-l-[#218A1F] sm:text-[26px] text-xl font-bold text-[#218A1F] pl-8 mb-6'>
-          <p>Pergerakan Harga Jual Kambing Per Desember</p>
+          <p>Pergerakan Harga Jual Ternak Per Desember</p>
           <p>2022</p>
         </div>
         <div className='flex flex-col lg:w-[896px] w-full sm:mx-8 mx-2 p-7 bg-white shadow-md'>
@@ -310,10 +312,10 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
       <InvestMonitoring />
 
       {/* Article Panel */}
-      <div className='w-full flex flex-col items-center pt-16 mb-24 bg-[#EBEBEB]'>
+      <div className='w-full flex flex-col items-center pt-16 mb-24 bg-[#EBEBEB] tour-article'>
         <div className='w-full border-l-[64px] border-l-[#218A1F] text-[26px] font-bold text-[#218A1F] pl-8 mb-16'>
           <p>Ketahui Pengolahan Limbah Kotoran</p>
-          <p>Kambing Kamu!</p>
+          <p>Ternak Kamu!</p>
         </div>
         <div className='lg:w-[1024px] w-full mt-16 pb-12 flex lg:px-0 px-4'>
           {/* Left button */}

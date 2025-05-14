@@ -99,13 +99,13 @@ const Investasi = () => {
         </div>
 
         {/* Sex Options */}
-        <div className='flex flex-row items-center self-center space-x-4 mb-14' >
+        <div className='flex flex-row items-center self-center space-x-4 mb-14 tour-goat-filter' >
           <button onClick={() => goatSex === 'Jantan' ? setGoatSex('') : setGoatSex('Jantan')} className={goatSex === 'Jantan' ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2' : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>Jantan</button>
           <button onClick={() => goatSex === 'Betina' ? setGoatSex('') : setGoatSex('Betina')} className={goatSex === 'Betina' ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2' : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>Betina</button>
         </div>
 
         {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4'>
+        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-goat-card'>
           {
             goat.filter(e => e.name.toLowerCase().includes(goatSearch.toLowerCase().trim()) && e.sex.toLowerCase().includes(goatSex.toLowerCase().trim())).map(element => (
               <div onClick={() => setConfirmGoat(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
@@ -128,7 +128,7 @@ const Investasi = () => {
       <div className='flex flex-col items-center'>
 
         {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4'>
+        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-food-card'>
           {
             food.map(element => (
               <div onClick={() => setConfirmFood(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
@@ -149,16 +149,18 @@ const Investasi = () => {
       <div className='flex flex-col items-center'>
 
         {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4'>
+        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-maintenance-card'>
           {
-            maintenance.map(element => (
-              <div onClick={() => setConfirmMaintenance(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
-                <div className={selectedMaintenance != null && selectedMaintenance.uid === element.uid ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]' : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'} />
-                <img src={element.image} alt='/' className='w-full' />
-                <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{element.name}</h4>
-                <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.description}</p>
-              </div>
-            ))
+            maintenance
+              .filter(e => confirmMaintenance == null || e.uid !== confirmMaintenance.uid)
+              .map(element => (
+                <div onClick={() => setConfirmMaintenance(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
+                  <div className={selectedMaintenance != null && selectedMaintenance.uid === element.uid ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]' : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'} />
+                  <img src={element.image} alt='/' className='w-full' />
+                  <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{element.name}</h4>
+                  <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.description}</p>
+                </div>
+              ))
           }
         </div>
       </div>
@@ -205,6 +207,33 @@ const Investasi = () => {
     }
   }
 
+  const ConfirmCard = ({ data, onRemove, isHidden }) => (
+    <div className='flex flex-col space-y-2 py-2 shadow-lg w-full min-h-[300px]'>
+      <button onClick={onRemove} className={isHidden ? 'hidden' : 'mx-2 p-1 self-end bg-gray-400'}>
+        <AiOutlineClose size={20} color='#000' />
+      </button>
+      <img src={data.image} alt='/' className='w-full rounded' />
+      <h4 className='font-bold text-[#000000CC] text-base mx-2'>{data.name}</h4>
+      {data.sex && <p className='font-normal text-[#858585] text-sm mx-2'>{data.sex}</p>}
+      {data.type && <p className='font-normal text-[#858585] text-sm mx-2'>{data.type}</p>}
+      {data.weight && <p className='font-normal text-[#858585] text-sm mx-2'>{data.weight} kg / {data.time} bulan</p>}
+      {data.price && <p className='text-[#EA341B] text-base font-medium mx-2'>Rp. {data.price.toLocaleString().replaceAll(',', '.')}</p>}
+      {data.description && <p className='font-normal text-[#858585] text-sm mx-2'>{data.description}</p>}
+    </div>
+  );
+
+  const PlaceholderCard = ({ label, showButton }) => (
+    <div className='flex flex-col justify-center items-center min-h-[300px] text-center'>
+      <p className='text-md font-normal text-[#666666CC]'>{label}</p>
+      {showButton && (
+        <button disabled className='bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4'>
+          Pilih
+        </button>
+      )}
+    </div>
+  );
+
+
   return (
     <div>
       {/* Navbar */}
@@ -228,99 +257,77 @@ const Investasi = () => {
       </div>
 
       {/* Pilih Investasi */}
-      <div className='mx-16 flex flex-col mb-16'>
+      <div className='mx-16 flex flex-col mb-16 tour-goat-header min-h-screen pb-20'>
+
         <div className='text-black text-xl font-semibold w-full px-8 py-5 bg-[#D6F6D5]'>Pilih Investasimu</div>
 
-        {/* Invest Result */}
-        <div className='w-full lg:h-[50vh] h-fit grid grid-cols-4 mb-12'>
-          <div className='flex-1 flex flex-col items-center justify-center p-4 border-r-2 border-r-[#999999]'>
-            <p className='text-md font-normal text-black text-center'>kamu bisa memilih jenis ternak, jenis pakan dan jenis perawatan  di tabel ini</p>
-            <button onClick={() => {
-              if (localStorage.getItem('uid') === null) {
-                setNoAccountModal(true);
-              } else if (localStorage.getItem('role') === 'admin') {
-                showTheModal('Terjadi Kesalahan!', 'Admin tidak dapat melakukan transaksi!');
-              } else {
-                if (confirmMaintenance != null) {
-                  doTransaction();
+        <div className='w-full lg:h-[50vh] grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12 pb-4'>
+          {/* Section 1 - Penjelasan dan CTA */}
+          <div className='flex flex-col items-center justify-center p-6 border rounded'>
+            <p className='text-md text-black text-center mb-4'>
+              Kamu bisa memilih jenis ternak, jenis pakan, dan jenis perawatan di tabel ini
+            </p>
+            <button
+              onClick={() => {
+                if (localStorage.getItem('uid') === null) {
+                  setNoAccountModal(true);
+                } else if (localStorage.getItem('role') === 'admin') {
+                  showTheModal('Terjadi Kesalahan!', 'Admin tidak dapat melakukan transaksi!');
+                } else {
+                  if (confirmMaintenance != null) {
+                    doTransaction();
+                  }
                 }
-              }
-            }} className='bg-[#145412C2] text-white text-base font-normal px-8 py-2 rounded-lg mt-4'>Investasi Sekarang</button>
+              }}
+              className='bg-[#145412C2] text-white px-8 py-2 rounded-lg'
+            >
+              Investasi Sekarang
+            </button>
           </div>
-          {/* Confirm Goat  */}
-          <div className='flex-1 flex flex-col items-center justify-center border-r-2 border-r-[#999999]'>
-            {
-              confirmGoat
-                ? (
-                  <div className='flex flex-col space-y-2 py-2 shadow-lg'>
-                    <button
-                      onClick={() => setDeleteConfirm({ type: 'goat', show: true })}
-                      className={confirmFood ? 'hidden' : 'mx-2 p-1 self-end bg-gray-400'}>
-                      <AiOutlineClose size={20} color='#000000' />
-                    </button>
-                    <img src={confirmGoat.image} alt='/' className='w-full' />
-                    <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{confirmGoat.name} {confirmGoat.sex}</h4>
-                    <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{confirmGoat.type}</p>
-                    <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{confirmGoat.weight} kg / {confirmGoat.time} bulan</p>
-                    <p className='text-[#EA341B] text-base font-medium mx-2 overflow-hidden'>Rp. {confirmGoat.price.toLocaleString().replaceAll(',', '.')}</p>
-                  </div>
-                ) : (
-                  <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis ternakmu</p>
-                    <button disabled className='bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4'>Pilih</button>
-                  </div>
-                )
-            }
+
+          {/* Section 2 - Goat */}
+          <div className='p-4 border rounded'>
+            {confirmGoat ? (
+              <ConfirmCard data={confirmGoat} onRemove={() => setDeleteConfirm({ type: 'goat', show: true })} isHidden={confirmFood} />
+            ) : (
+              <PlaceholderCard label='Pilih jenis ternakmu' showButton={true} />
+            )}
           </div>
-          {/* Confirm Food */}
-          <div className='flex-1 flex flex-col items-center justify-center p-4 border-r-2 border-r-[#999999]'>
-            {
-              confirmFood
-                ? (
-                  <div className='flex flex-col space-y-2 py-2 shadow-lg'>
-                    <button onClick={() => setConfirmFood(null)} className={confirmMaintenance ? 'hidden' : 'mx-2 p-1 self-end bg-gray-400'}><AiOutlineClose size={20} color='#000000' /></button>
-                    <img src={confirmFood.image} alt='/' className='w-full' />
-                    <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{confirmFood.name}</h4>
-                    <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{confirmFood.description}</p>
-                  </div>
-                )
-                : (
-                  <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis pakan ternakmu</p>
-                    <button disabled className={confirmGoat ? 'bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4' : 'hidden'}>Pilih</button>
-                  </div>
-                )
-            }
+
+          {/* Section 3 - Food */}
+          <div className='p-4 border rounded'>
+            {confirmFood ? (
+              <ConfirmCard data={confirmFood} onRemove={() => setConfirmFood(null)} isHidden={confirmMaintenance} />
+            ) : (
+              <PlaceholderCard label='Pilih jenis pakan ternakmu' showButton={!!confirmGoat} />
+            )}
           </div>
-          {/* Confirm Maintenance */}
-          <div className='flex-1 flex flex-col items-center justify-center p-4 border-r-[#999999]'>
-            {
-              confirmMaintenance
-                ? (
-                  <div className='flex flex-col space-y-2 py-2 shadow-lg'>
-                    <button onClick={() => setConfirmMaintenance(null)} className='mx-2 p-1 self-end bg-gray-400'><AiOutlineClose size={20} color='#000000' /></button>
-                    <img src={confirmMaintenance.image} alt='/' className='w-full' />
-                    <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{confirmMaintenance.name}</h4>
-                    <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{confirmMaintenance.description}</p>
-                  </div>
-                )
-                : (
-                  <div className='flex flex-col justify-center items-center'>
-                    <p className='text-md font-normal text-[#666666CC] text-center'>Pilih jenis perawatan ternakmu</p>
-                    <button disabled className={confirmFood ? 'bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4' : 'hidden'}>Pilih</button>
-                  </div>
-                )
-            }
+
+          {/* Section 4 - Maintenance */}
+          <div className='p-4 border rounded'>
+            {confirmMaintenance ? (
+              <ConfirmCard data={confirmMaintenance} onRemove={() => setConfirmMaintenance(null)} />
+            ) : (
+              <PlaceholderCard label='Pilih jenis perawatan ternakmu' showButton={!!confirmFood} />
+            )}
           </div>
         </div>
 
-        {
-          confirmGoat
-            ? (
-              confirmFood ? renderMaintenance() : renderFood()
+
+        <div className="w-full">
+          {
+            confirmGoat && confirmFood && confirmMaintenance ? (
+              <div className="w-full h-16 mt-4" /> // Spacer 64px dengan margin atas
+            ) : (
+              confirmGoat
+                ? (
+                  confirmFood ? renderMaintenance() : renderFood()
+                )
+                : renderGoat()
             )
-            : renderGoat()
-        }
+          }
+        </div>
+
       </div>
 
       {/* Footer */}
