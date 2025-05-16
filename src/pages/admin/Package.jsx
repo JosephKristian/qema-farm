@@ -45,16 +45,20 @@ const Package = () => {
   }, [])
 
   useEffect(() => {
-    setPackageName(prev => packageSelected === null ? '' : packageSelected.name);
-    setPackagePrice(prev => packageSelected === null ? 0 : packageSelected.price);
-    setPackageDiscount(prev => packageSelected === null ? 0 : packageSelected.discount_price);
-    setPackageGoat(prev => packageSelected === null ? '' : packageSelected.goat.uid);
-    setPackageFood(prev => packageSelected === null ? '' : packageSelected.food.uid);
-    setPackageMaintenance(prev => packageSelected === null ? '' : packageSelected.maintenance.uid);
-    setPackageDescription(prev => packageSelected === null ? '' : packageSelected.description);
-    return () => {
+    if (packageSelected) {
+      setPackageName(packageSelected.name || '');
+      setPackagePrice(packageSelected.price || 0);
+      setPackageDiscount(packageSelected.discount_price || 0);
+      setPackageGoat(packageSelected.goat?.uid || (goatRed.length > 0 ? goatRed[0].uid : ''));
+      setPackageFood(packageSelected.food?.uid || (foodRed.length > 0 ? foodRed[0].uid : ''));
+      setPackageMaintenance(packageSelected.maintenance?.uid || (maintenanceRed.length > 0 ? maintenanceRed[0].uid : ''));
+      setPackageDescription(packageSelected.description || '');
+    } else {
+      // Reset form when no package selected
+      resetForm();
     }
-  }, [packageSelected])
+  }, [packageSelected, goatRed, foodRed, maintenanceRed]);
+  
 
   const showTheModal = (title, description) => {
     setTitle(title);
@@ -70,15 +74,15 @@ const Package = () => {
   }
 
   const resetForm = () => {
-    setPackageName(prev => '');
-    setPackagePrice(prev => 0);
-    setPackageDiscount(prev => 0);
-    setPackageGoat(prev => null);
-    setPackageFood(prev => null);
-    setPackageMaintenance(prev => null);
-    setPackageDescription(prev => '');
-    setPackageSelected(prev => null);
-  }
+    setPackageName('');
+    setPackagePrice(0);
+    setPackageDiscount(0);
+    setPackageGoat(goatRed.length > 0 ? goatRed[0].uid : '');
+    setPackageFood(foodRed.length > 0 ? foodRed[0].uid : '');
+    setPackageMaintenance(maintenanceRed.length > 0 ? maintenanceRed[0].uid : '');
+    setPackageDescription('');
+  };
+  
 
   const retrieveAllFood = async () => {
     try {
@@ -218,7 +222,7 @@ const Package = () => {
       console.log('price');
       return false;
     } else if (packageGoat === null || packageGoat.length < 1) {
-      console.log('goat');
+      console.log(`goat ${packageGoat}`);
       return false;
     } else if (packageFood === null || packageFood.length < 1) {
       console.log('food');
@@ -374,75 +378,155 @@ const Package = () => {
           overlay: {
             color: '#00000000',
             backgroundColor: '#000000CC',
-            zIndex: '20'
-          }
-        }} >
-
-        <div className='bg-transparent rounded-xl p-2 min-w-[480px] min-h-[280px] text-black flex flex-col justify-between space-y-4'>
+            zIndex: '20',
+          },
+        }}
+      >
+        <div className="bg-transparent rounded-xl p-2 min-w-[480px] min-h-[280px] text-black flex flex-col justify-between space-y-4">
           {/* Package Name */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Nama Paket <span className='text-red-600'>*</span></p>
-            <input type='text' defaultValue='' onChange={(e) => setPackageName(e.target.value)} placeholder='Nama Paket' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Nama Paket <span className="text-red-600">*</span>
+            </p>
+            <input
+              type="text"
+              value={packageName}
+              onChange={(e) => setPackageName(e.target.value)}
+              placeholder="Nama Paket"
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            />
           </div>
+
           {/* Package Price */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Harga Paket <span className='text-red-600'>*</span></p>
-            <input type='number' defaultValue={0} onChange={(e) => setPackagePrice(e.target.value.length < 1 ? 1 : parseInt(e.target.value))} placeholder='Harga Paket' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Harga Paket <span className="text-red-600">*</span>
+            </p>
+            <input
+              type="number"
+              value={packagePrice}
+              onChange={(e) => {
+                const val = e.target.value;
+                setPackagePrice(val === '' ? 0 : parseInt(val));
+              }}
+              placeholder="Harga Paket"
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            />
           </div>
+
           {/* Package Discount */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Harga Diskon</p>
-            <input type='number' defaultValue={0} onChange={(e) => setPackageDiscount(e.target.value === '' ? 1 : parseInt(e.target.value))} placeholder='Harga Diskon Paket' className='w-full border border-gray-200 rounded-md outline-none p-2' />
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">Harga Diskon</p>
+            <input
+              type="number"
+              value={packageDiscount}
+              onChange={(e) => {
+                const val = e.target.value;
+                setPackageDiscount(val === '' ? 0 : parseInt(val));
+              }}
+              placeholder="Harga Diskon Paket"
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            />
           </div>
+
           {/* Goat */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1
-            '>Jenis Kambing <span className='text-red-600'>*</span></p>
-            <select defaultValue={goatRed.length < 1 ? '' : goatRed[0].uid} onChange={(e) => setPackageGoat(goatRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                goatRed.map(element => (
-                  <option value={element.uid}>{element.name} {element.type} ({element.sex})</option>
-                ))
-              }
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Jenis Kambing <span className="text-red-600">*</span>
+            </p>
+            <select
+              value={packageGoat}
+              onChange={(e) => setPackageGoat(e.target.value)}
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            >
+              {goatRed.map((element) => (
+                <option key={element.uid} value={element.uid}>
+                  {element.name} {element.type} ({element.sex})
+                </option>
+              ))}
             </select>
           </div>
+
           {/* Food */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Pakan <span className='text-red-600'>*</span></p>
-            <select defaultValue={foodRed.length < 1 ? '' : foodRed[0].uid} onChange={(e) => setPackageFood(foodRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                foodRed.map(element => (
-                  <option value={element.uid}>{element.name}</option>
-                ))
-              }
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Pakan <span className="text-red-600">*</span>
+            </p>
+            <select
+              value={packageFood}
+              onChange={(e) => setPackageFood(e.target.value)}
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            >
+              {foodRed.map((element) => (
+                <option key={element.uid} value={element.uid}>
+                  {element.name}
+                </option>
+              ))}
             </select>
           </div>
+
           {/* Maintenance */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Perawatan <span className='text-red-600'>*</span></p>
-            <select defaultValue={maintenanceRed.length < 1 ? '' : maintenanceRed[0].uid} onChange={(e) => setPackageMaintenance(maintenanceRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                maintenanceRed.map(element => (
-                  <option value={element.uid}>{element.name}</option>
-                ))
-              }
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Perawatan <span className="text-red-600">*</span>
+            </p>
+            <select
+              value={packageMaintenance}
+              onChange={(e) => setPackageMaintenance(e.target.value)}
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            >
+              {maintenanceRed.map((element) => (
+                <option key={element.uid} value={element.uid}>
+                  {element.name}
+                </option>
+              ))}
             </select>
           </div>
+
           {/* Description */}
-          <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Deskripsi Paket <span className='text-red-600'>*</span></p>
-            <textarea defaultValue='' onChange={(e) => setPackageDescription(e.target.value)} placeholder='Deskripsi Paket' rows={3} className='w-full border border-gray-200 rounded-md outline-none p-2'></textarea>
+          <div className="flex flex-col justify-between items-start space-y-2">
+            <p className="text-base font-medium text-[#333333] flex-1">
+              Deskripsi Paket <span className="text-red-600">*</span>
+            </p>
+            <textarea
+              value={packageDescription}
+              onChange={(e) => setPackageDescription(e.target.value)}
+              placeholder="Deskripsi Paket"
+              rows={3}
+              className="w-full border border-gray-200 rounded-md outline-none p-2"
+            ></textarea>
           </div>
+
           {/* Button */}
-          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
-            <button className='border border-[#145412] px-4 py-2 rounded-lg text-[#145412] font-semibold text-base' onClick={() => {
-              resetForm();
-              setAddPackageModal(false);
-            }}>Batal</button>
-            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => addPackage()}>Tambah</button>
+          <div className="flex flex-row justify-end items-center space-x-4 pt-8">
+            <button
+              className="border border-[#145412] px-4 py-2 rounded-lg text-[#145412] font-semibold text-base"
+              onClick={() => {
+                resetForm();
+                setAddPackageModal(false);
+              }}
+            >
+              Batal
+            </button>
+            <button
+              className="bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base"
+              onClick={() => {
+                console.log({
+                  packageName,
+                  packagePrice,
+                  packageGoat,
+                  packageFood,
+                  packageMaintenance,
+                  packageDescription,
+                });
+                addPackage();
+              }}
+            >
+              Tambah
+            </button>
+
           </div>
         </div>
-
       </Modal>
 
       {/* Edit Package Modal */}
@@ -487,34 +571,43 @@ const Package = () => {
           {/* Goat */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Jenis Kambing <span className='text-red-600'>*</span></p>
-            <select defaultValue={packageSelected === null ? (goatRed.length < 1 ? '' : goatRed[0].uid) : packageSelected.goat.uid} onChange={(e) => setPackageGoat(goatRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                goatRed.map(element => (
-                  <option value={element.uid}>{element.name} {element.type} ({element.sex})</option>
-                ))
-              }
+            <select
+              value={packageGoat}
+              onChange={(e) => setPackageGoat(e.target.value)}
+              className='w-full border border-gray-200 rounded-md outline-none p-2'
+            >
+              {goatRed.map((element) => (
+                <option key={element.uid} value={element.uid}>
+                  {element.name} {element.type} ({element.sex})
+                </option>
+              ))}
             </select>
+
           </div>
           {/* Food */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Pakan <span className='text-red-600'>*</span></p>
-            <select defaultValue={packageSelected === null ? (foodRed.length < 1 ? '' : foodRed[0].uid) : packageSelected.food.uid} onChange={(e) => setPackageFood(foodRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                foodRed.map(element => (
-                  <option value={element.uid}>{element.name}</option>
-                ))
-              }
+            <select
+              value={packageFood}
+              onChange={(e) => setPackageFood(e.target.value)}
+              className='w-full border border-gray-200 rounded-md outline-none p-2'
+            >
+              {foodRed.map((element) => (
+                <option key={element.uid} value={element.uid}>{element.name}</option>
+              ))}
             </select>
           </div>
           {/* Maintenance */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Perawatan <span className='text-red-600'>*</span></p>
-            <select defaultValue={packageSelected === null ? (maintenanceRed.length < 1 ? '' : maintenanceRed[0].uid) : packageSelected.maintenance.uid} onChange={(e) => setPackageMaintenance(maintenanceRed.filter(data => data.uid === e.target.value)[0].uid)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
-              {
-                maintenanceRed.map(element => (
-                  <option value={element.uid}>{element.name}</option>
-                ))
-              }
+            <select
+              value={packageMaintenance}
+              onChange={(e) => setPackageMaintenance(e.target.value)}
+              className='w-full border border-gray-200 rounded-md outline-none p-2'
+            >
+              {maintenanceRed.map((element) => (
+                <option key={element.uid} value={element.uid}>{element.name}</option>
+              ))}
             </select>
           </div>
           {/* Description */}

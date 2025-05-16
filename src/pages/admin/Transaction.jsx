@@ -36,12 +36,6 @@ const Transaction = () => {
     }
   }), []);
 
-  const handleWeightChange = (index, value) => {
-    const updatedWeights = [...weights];
-    updatedWeights[index] = value;
-    setWeights(updatedWeights);
-  };
-
   useEffect(() => {
     if (localStorage.getItem('role') !== 'admin') {
       navigate('/', { replace: true });
@@ -117,9 +111,9 @@ const Transaction = () => {
                   <th className="bg-gray-600 border border-white py-4 px-2">Pakan</th>
                   <th className="bg-gray-600 border border-white py-4 px-2">Perawatan</th>
                   <th className="bg-gray-600 border border-white py-4 px-2">Harga</th>
-                  <th className="bg-gray-600 border border-white py-4 px-2">Berat Live (kg)</th>
                   <th className="bg-gray-600 border border-white py-4 px-2">Status</th>
                   <th className="bg-gray-600 border border-white py-4 px-2">Aksi</th>
+                  <th className="bg-gray-600 border border-white py-4 px-2">Berat Live (kg)</th>
                 </tr>
               </thead>
               <tbody>
@@ -163,7 +157,7 @@ const Transaction = () => {
                     <td className="border border-slate-200 p-2 text-[#EA341B] font-medium capitalize">
                       Rp. {element.goat?.price?.toLocaleString().replaceAll(',', '.') || '0'}
                     </td>
-                    <td className="border border-slate-200 p-2 text-[#333333] capitalize">{element.weight || '-'}</td>
+                    <td className="border border-slate-200 p-2 text-center">{element.weight || '-'} kg </td>
                     <td className="border border-slate-200 p-2 text-center">
                       {element.confirmed ? (
                         <span role="img" aria-label="confirmed" className="text-green-600 text-xl">✔️</span>
@@ -187,14 +181,13 @@ const Transaction = () => {
                         <input
                           type="number"
                           placeholder="Berat (kg)"
-                          className="border border-gray-300 rounded px-2 py-1 text-xs w-24"
-                          value={weights[index] || ''}
-                          onChange={(e) => handleWeightChange(index, e.target.value)}
+                          className="border border-gray-300 rounded px-2 py-1 text-xs w-16"
                         />
+
                         <button
                           onClick={async () => {
                             await saveWeight(element.uid, weights[index]);
-                            await retrieveAllTransaction(); 
+                            await retrieveAllTransaction();
                           }}
                           className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded"
                         >

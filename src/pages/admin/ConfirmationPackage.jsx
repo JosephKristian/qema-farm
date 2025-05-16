@@ -69,13 +69,12 @@ const ConfirmationPackage = () => {
   }
 
   return (
-    <div>
-
+    <div className="min-h-screen bg-gray-50 pt-20">
       {/* Navbar */}
       <Navbar />
 
       <div className='flex justify-center items-center px-4 py-6'>
-  <div className='bg-transparent rounded-xl p-4 w-full max-w-md text-black flex flex-col justify-between space-y-4'>
+        <div className='bg-transparent rounded-xl p-4 w-full max-w-md text-black flex flex-col justify-between space-y-4'>
           <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
             <p className='text-base font-medium text-[#333333] flex-1'>Nama Konsumen</p>
             <p className='w-full border border-gray-200 rounded-md p-2'>{userData === null ? '' : userData.name}</p>
@@ -108,9 +107,25 @@ const ConfirmationPackage = () => {
             <p className='text-base font-medium text-[#333333] flex-1'>Harga Diskon</p>
             <p className='w-full border border-gray-200 rounded-md text-[#EA341B] font-medium p-2'>Rp. {packageData === null ? '0' : packageData.discount_price.toLocaleString().replaceAll(',', '.')}</p>
           </div>
-          <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
-            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => confirmOrder()}>Konfirmasi</button>
-          </div>
+          {packageData?.confirmed === false && (
+            <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
+              <button
+                className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base'
+                onClick={async () => {
+                  await confirmOrder();
+                  window.location.reload();
+                }}
+              >
+                Konfirmasi
+              </button>
+
+            </div>
+          )}
+          {packageData?.confirmed === true && (
+            <div className="p-4 bg-green-100 text-green-800 rounded-md font-semibold">
+              Transaksi sudah dikonfirmasi ✅
+            </div>
+          )}
         </div>
       </div>
 
@@ -135,18 +150,18 @@ const ConfirmationPackage = () => {
         }}
       >
 
-      <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
-        <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
-        <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
-        <div className='flex flex-row justify-end items-center space-x-4'>
-          <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
+        <div className='bg-transparent rounded-xl p-2 w-[360px] h-[280px] text-black flex flex-col justify-between space-y-6'>
+          <h1 className='text-xl font-bold text-[#333333] '>{title}</h1>
+          <p className='flex-1 text-base font-medium text-[#145412]'>{description}</p>
+          <div className='flex flex-row justify-end items-center space-x-4'>
+            <button className='bg-[#145412] px-4 py-2 rounded-lg text-white font-semibold text-base' onClick={() => setVisibleModal(false)}>Oke, Siap</button>
+          </div>
         </div>
-      </div>
 
-    </Modal>
+      </Modal>
 
-      {/* Loading */ }
-  <Loading show={loading} />
+      {/* Loading */}
+      <Loading show={loading} />
 
     </div >
   );

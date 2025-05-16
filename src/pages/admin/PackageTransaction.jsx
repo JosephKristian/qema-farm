@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import NavbarAdmin from '../../components/NavbarAdmin';
 import Sidebar from '../../components/Sidebar';
 import { packageTransactionReducer } from '../../config/Reducer';
-import { getAllPackageTransaction, getUserData } from '../../functions/Database';
+import { getAllPackageTransaction, getUserData, saveWeight, saveWeightPackageTransacion } from '../../functions/Database';
 // import NoAvatar from '../../assets/logo.png';
 import { useNavigate } from 'react-router-dom';
 import Loading from '../../components/Loading';
@@ -19,6 +19,7 @@ const PackageTransaction = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
+  const [weights, setWeights] = useState([]);
   // const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
@@ -55,19 +56,30 @@ const PackageTransaction = () => {
 
   const retrieveAllPackageTransaction = async () => {
     try {
-      await getAllPackageTransaction().then(
-        (resolve) => {
-          dispatch({
-            type: 'retrieve_package_transaction',
-            data: [...resolve],
-          });
-        },
-        (reject) => { throw reject; }
+      const transactions = await getAllPackageTransaction();
+
+      const transactionsWithUserData = await Promise.all(
+        transactions.map(async (tx) => {
+          const userData = await getUserData(tx.user);
+          return {
+            ...tx,
+            userData,
+          };
+        })
       );
+      console.log(JSON.stringify(transactionsWithUserData, null, 2));
+
+      const sortedTransactions = transactionsWithUserData.sort((a, b) => b.created_at - a.created_at);
+
+      dispatch({
+        type: 'retrieve_package_transaction',
+        data: [...sortedTransactions],
+      });
     } catch (error) {
       showTheModal('Terjadi Kesalahan!', error.toString());
     }
-  }
+  };
+
 
   return (
     <div>
@@ -83,54 +95,140 @@ const PackageTransaction = () => {
           <div className='w-full py-6 rounded-lg border border-slate-300 bg-slate-200 shadow-md overflow-x-auto'>
             <table className="bg-white w-full min-w-[800px] table-fixed border-collapse border text-sm">
               <thead>
-                <tr className='text-white text-xs sm:text-sm md:text-base'>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>No. Paket</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>Paket</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>Harga</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>Status</th>
-                  <th className='bg-gray-600 border border-white py-4 px-2'>Aksi</th>
+                <tr className="text-white text-xs sm:text-sm md:text-base">
+                  {[
+                    "No. Paket",
+                    "Nama",
+                    "Kode Pemilik",
+                    "Tanggal Dibuat",
+                    "Tanggal Konfirmasi",
+                    "Paket",
+                    "Harga",
+                    "Status",
+                    "Berat Live",
+                    "Aksi"
+                  ].map((header, idx) => (
+                    <th key={idx} className="bg-gray-600 border border-white py-3 px-2 text-nowrap">
+                      {header}
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {
-                  state.map((element, index) => (
-                    <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
-                      <td className='border border-slate-200 p-2 text-[#333333] max-w-[160px] truncate' title={element.uid}>
-                        {element.key}
-                      </td>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
-                      <td className='border border-slate-200 p-2 text-[#EA341B] capitalize'>
-                        <div className='flex flex-col sm:flex-row sm:items-center sm:space-x-2'>
-                          <span className={element.discount_price != null ? 'line-through text-[#333333] font-normal' : 'text-[#EA341B] text-sm font-medium'}>
-                            Rp. {format.format(element.price).replaceAll(',', '.')}
+                {state.map((element, index) => (
+                  <tr
+                    key={element.uid}
+                    className={`${index % 2 === 0 ? "bg-gray-100" : ""} text-xs sm:text-sm md:text-base font-medium`}
+                  >
+                    {/* No. Paket */}
+                    <td className="border border-slate-200 p-2 text-[#333333] max-w-[160px] truncate" title={element.uid}>
+                      {element.key || element.uid}
+                    </td>
+
+                    {/* Nama */}
+                    <td className="border border-slate-200 p-2 text-[#333333] capitalize">
+                      {element.userData?.name || "-"}
+                    </td>
+
+                    <td className="border border-slate-200 p-2 text-[#333333] max-w-[140px] truncate whitespace-nowrap" title={element.user}>
+                      {element.user}
+                    </td>
+
+                    <td className="border border-slate-200 p-2 text-[#333333]">
+                      {element.created_at
+                        ? new Date(element.created_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </td>
+                    <td className="border border-slate-200 p-2 text-[#333333]">
+                      {element.confirmed_at
+                        ? new Date(element.confirmed_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </td>
+
+                    {/* Paket */}
+                    <td className="border border-slate-200 p-2 text-[#333333] capitalize">{element.name}</td>
+
+                    {/* Harga */}
+                    <td className="border border-slate-200 p-2 text-[#EA341B] text-sm">
+                      {element.discount_price != null ? (
+                        <div className="flex flex-col space-y-1">
+                          <span className="line-through text-[#999999] text-xs">
+                            Rp. {format.format(element.price).replaceAll(",", ".")}
                           </span>
-                          {element.discount_price != null && (
-                            <span className='text-[#EA341B] text-base font-semibold'>
-                              {format.format(element.discount_price).replaceAll(',', '.')}
-                            </span>
-                          )}
+                          <span className="text-[#EA341B] text-base font-semibold">
+                            Rp. {format.format(element.discount_price).replaceAll(",", ".")}
+                          </span>
                         </div>
-                      </td>
-                      <td className='border border-slate-200 p-2 text-[#333333] capitalize'>
-                        {element.confirmed ? 'Dikonfirmasi' : 'Belum Dikonfirmasi'}
-                      </td>
-                      <td className='border border-slate-200 p-2'>
-                        <div className='flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2'>
-                          <button
-                            onClick={() => {
-                              console.log(element);
-                              getUser(element.user);
-                              setPackageSelected(element);
-                            }}
-                            className='bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 text-xs sm:text-sm'
-                          >
-                            Detail
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                }
+                      ) : (
+                        <span className="text-[#EA341B] text-sm font-medium">
+                          Rp. {format.format(element.price).replaceAll(",", ".")}
+                        </span>
+                      )}
+                    </td>
+
+                    {/* Status */}
+                    <td className="border border-slate-200 p-2 text-center">
+                      {element.confirmed ? (
+                        <span role="img" aria-label="confirmed" className="text-green-600 text-xl">
+                          ✔️
+                        </span>
+                      ) : (
+                        <span role="img" aria-label="pending" className="text-yellow-500 text-xl">
+                          ⏳
+                        </span>
+                      )}
+                    </td>
+                    <td className="border border-slate-200 p-2 text-center">{element.weight || '-'} kg </td>
+                    {/* Aksi */}
+                    <td className="border border-slate-200 p-2 text-nowrap">
+                      <div className="flex flex-col sm:flex-row sm:space-x-2 sm:items-center space-y-2 sm:space-y-0">
+                        <button
+                          onClick={() => {
+                            getUser(element.user);
+                            setPackageSelected(element);
+                          }}
+                          className="bg-gray-800 hover:bg-gray-700 rounded-lg text-white px-4 py-2 text-xs sm:text-sm"
+                        >
+                          Detail
+                        </button>
+                      </div>
+                      <div className="mt-2 flex flex-wrap items-center gap-2">
+                        <input
+                          type="number"
+                          placeholder="Berat (kg)"
+                          className="border border-gray-300 rounded px-2 py-1 text-xs w-20"
+                          value={weights[index] || ''}
+                          onChange={(e) => {
+                            const updatedWeights = [...weights];
+                            updatedWeights[index] = e.target.value;
+                            setWeights(updatedWeights);
+                          }}
+                        />
+                        <button
+                          onClick={async () => {
+                            await saveWeightPackageTransacion(element.key , weights[index]);
+                            await retrieveAllPackageTransaction();
+                          }}
+                          className="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-1 rounded"
+                        >
+                          Simpan
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

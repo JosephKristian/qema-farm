@@ -11,7 +11,7 @@ import Goat from '../../assets/goat-white.png';
 import Decoration1 from '../../assets/decoration-box-1.png';
 import Decoration2 from '../../assets/decoration-box-2.png';
 import NoPortofolio from '../../assets/no_portofolio.png';
-import { getAllGoat, getAllTransaction } from '../../functions/Database';
+import { getAllGoat, getAllPackageTransaction, getAllTransaction } from '../../functions/Database';
 
 // Format angka
 const numberFormatter = new Intl.NumberFormat('id-ID', {
@@ -26,6 +26,7 @@ const Portofolio = () => {
   const [specialDay, setSpecialDay] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [userTransactions, setUserTransactions] = useState([]);
+  const [userPackageTransactions, setUserPackageTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const uid = localStorage.getItem('uid');
 
@@ -78,6 +79,16 @@ const Portofolio = () => {
       setUserTransactions(filtered);
       setLoading(false);
     });
+
+    getAllPackageTransaction().then((data) => {
+      const filtered = data
+        .filter(trx => trx.user === uid)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Urut dari terbaru ke terlama
+
+      setUserPackageTransactions(filtered);
+      setLoading(false);
+    });
+
   }, [uid]);
 
 
@@ -352,6 +363,68 @@ const Portofolio = () => {
           </div>
         </div>
       )}
+
+      {/* Tabel Detail Transaksi Paket oleh User */}
+      {uid && (
+        <div className="mt-16">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Transaksi Paket</h2>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="py-2 px-4 border">No</th>
+                  <th className="py-2 px-4 border">Kode Paket</th>
+                  <th className="py-2 px-4 border">Berat Awal (kg)</th>
+                  <th className="py-2 px-4 border">Berat Terkini (kg)</th>
+                  <th className="py-2 px-4 border">Harga</th>
+                  <th className="py-2 px-4 border">Tanggal Dibuat</th>
+                  <th className="py-2 px-4 border">Tanggal Konfirmasi</th>
+                </tr>
+              </thead>
+              <tbody>
+                {userPackageTransactions.map((trx, idx) => (
+                  <tr key={idx} className="text-center">
+                    <td className="py-2 px-4 border">{idx + 1}</td>
+                    <td className="py-2 px-4 border">{trx.name}{trx.uid || trx.key}</td>
+                    <td className="py-2 px-4 border">
+                      {trx.goat?.weight ? `${trx.weight} kg` : '-'}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {trx.weight ? `${trx.weight} kg` : '-'}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {numberFormatter.format(trx.discount_price ?? trx.price).replaceAll(',', '.')}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {trx.created_at
+                        ? new Date(trx.created_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {trx.confirmed_at
+                        ? new Date(trx.confirmed_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
 
 
       {/* Invest Monitoring or No Portofolio */}

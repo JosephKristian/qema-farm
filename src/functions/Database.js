@@ -365,14 +365,17 @@ export const getPackage = (uid) => {
 // Confirm Package
 export const confirmPackage = (key, thePackage) => {
   return new Promise((resolve, reject) => {
-    set(ref(database, `${packageTransactionsRef}${key}`), {
+    set(ref(database, `${packageTransactionsRef}/${key}`), {
       ...thePackage,
       confirmed: true,
+      updated_at: Date.now(),
+      confirmed_at: Date.now()
     }).then(() => {
       resolve(true);
     }).catch((error) => reject(error));
   });
-}
+};
+
 
 // Remove Package
 export const removePackage = (uid) => {
@@ -400,6 +403,32 @@ export const addNewPackageTransaction = (data) => {
     }).catch((error) => reject(error));
   });
 }
+
+export const savePackageWeight = async (packageTransactionId, weight) => {
+  try {
+    await update(ref(database, `${packageTransactionsRef}/${packageTransactionId}`), {
+      weight: parseFloat(weight),
+      updated_at: new Date().getTime(),
+    });
+    alert('Berat paket berhasil disimpan!');
+  } catch (error) {
+    console.error('Gagal menyimpan berat paket:', error);
+    alert('Terjadi kesalahan saat menyimpan berat paket.');
+  }
+};
+
+export const saveWeightPackageTransacion = async (transactionId, weight) => {
+  try {
+    await update(ref(database, `${packageTransactionsRef}/${transactionId}`), {
+      weight: parseFloat(weight),
+      updated_at: new Date().getTime(), // jika ingin update timestamp juga
+    });
+    alert('Berat berhasil disimpan!');
+  } catch (error) {
+    console.error('Gagal menyimpan berat:', error);
+    alert('Terjadi kesalahan saat menyimpan berat.');
+  }
+};
 
 // Get All Package Transaction
 export const getAllPackageTransaction = () => {

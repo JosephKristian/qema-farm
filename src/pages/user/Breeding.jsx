@@ -54,7 +54,7 @@ const Breeding = () => {
       setLoading(true);
       const uid = localStorage.getItem('uid');
       const date = new Date().getTime();
-      await addNewPackageTransaction({ user: uid, confirmed: false, created_at: date, ...choosenOption }).then(
+      await addNewPackageTransaction({ user: uid, confirmed: false, created_at: date, updated_at: date, ...choosenOption }).then(
         async (resolve) => {
           await sendToWhatsapp(resolve.key);
         },
