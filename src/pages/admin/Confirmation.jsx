@@ -69,12 +69,12 @@ const Confirmation = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 pt-20">
       {/* Navbar */}
       <Navbar />
 
       <div className="container mx-auto px-4 py-6">
-        <div className="bg-white rounded-xl p-4 w-full max-w-xl mx-auto text-black flex flex-col space-y-4 shadow-md">
+      <div className="bg-white rounded-xl p-4 w-full max-w-xl mx-auto text-black flex flex-col space-y-4 shadow-md">
           {/* Nama Konsumen */}
           <div className="flex flex-col space-y-2">
             <label className="text-sm font-medium text-gray-700">Nama Konsumen</label>
@@ -90,6 +90,12 @@ const Confirmation = () => {
           {/* Jenis */}
           <div className="flex flex-col space-y-2">
             <label className="text-sm font-medium text-gray-700">Jenis</label>
+            <p className="border border-gray-200 rounded-md p-2">{transactionData?.goat?.livestockTypes || ''}</p>
+          </div>
+          
+          {/* Kategori Umur */}
+          <div className="flex flex-col space-y-2">
+            <label className="text-sm font-medium text-gray-700">Kategori Umur</label>
             <p className="border border-gray-200 rounded-md p-2">{transactionData?.goat?.type || ''}</p>
           </div>
 
@@ -128,6 +134,7 @@ const Confirmation = () => {
           </div>
 
           {/* Tombol Konfirmasi */}
+          {transactionData?.confirmed === false && (
           <div className="flex justify-end pt-4">
             <button
               onClick={confirmOrder}
@@ -136,13 +143,23 @@ const Confirmation = () => {
               Konfirmasi
             </button>
           </div>
+          )}
+
+          {transactionData?.confirmed === true && (
+          <div className="p-4 bg-green-100 text-green-800 rounded-md font-semibold">
+            Transaksi sudah dikonfirmasi ✅
+          </div>
+        )}
         </div>
       </div>
 
       {/* Modal */}
       <Modal
         isOpen={visibleModal}
-        onRequestClose={() => setVisibleModal(false)}
+        onRequestClose={() => {
+          setVisibleModal(false);
+          window.location.reload();
+        }}
         style={{
           content: {
             top: '50%',
@@ -162,7 +179,10 @@ const Confirmation = () => {
           <p className="text-base font-medium text-green-800">{description}</p>
           <div className="flex justify-end">
             <button
-              onClick={() => setVisibleModal(false)}
+             onClick={() => {
+              setVisibleModal(false);
+              window.location.reload();
+            }}            
               className="bg-green-700 hover:bg-green-800 text-white font-semibold px-4 py-2 rounded-lg"
             >
               Oke, Siap

@@ -239,7 +239,9 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
   return (
     <div>
       {/* Navbar */}
+      <div className='fixed top-0 left-0 w-full z-50'>
         <Navbar />
+      </div>
 
       {/* Top Panel */}
       <div className='gradient-green-yellow h-[86vh] w-full rounded-b-[40%] flex sm:flex-row flex-col-reverse items-center sm:px-16 px-8 pt-4 pb-[10vh] tour-dashboard'>

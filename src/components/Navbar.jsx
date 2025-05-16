@@ -9,17 +9,11 @@ const pages = [
   { title: 'Investasi', path: '/investasi' },
   { title: 'Portofolio', path: '/portofolio' },
   { title: 'Breeding', path: '/breeding' },
-  { title: 'Artikel', path: '/artikel' },
   { title: 'Profil', path: '/profil' },
-  { title: 'Admin', path: '/admin' },
-  { title: 'Pengguna', path: '/pengguna' },
-  { title: 'Kambing', path: '/kambing' },
+  { title: 'Ternak', path: '/kambing' },
   { title: 'Pakan', path: '/pakan' },
   { title: 'Perawatan', path: '/perawatan' },
   { title: 'Paket', path: '/paket' },
-  { title: 'Transaksi', path: '/transaksi' },
-  { title: 'Transaksi Paket', path: '/trans_paket' },
-  { title: 'Profil Admin', path: '/profil_admin' },
 ];
 
 const Navbar = () => {
@@ -118,7 +112,7 @@ const Navbar = () => {
   const path = window.location.pathname;
 
   return (
-    <nav className="w-full bg-[#FCFCFC] shadow-md z-50 fixed top-0 left-0 right-0 tour-nav">
+    <nav className="w-full bg-[#FCFCFC] shadow-md z-50 fixed top-0 left-0 right-0 tour-navbar">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 h-[90px] flex justify-between items-center">
         <div>
           <img

@@ -7,6 +7,8 @@ import Navbar from '../../components/Navbar';
 import NoAccount from '../../assets/no_account.png';
 import { foodReducer, goatReducer, maintenanceReducer } from '../../config/Reducer';
 import { getAdmin, getAllFood, getAllGoat, getAllMaintenance, newTransaction } from '../../functions/Database';
+import { resetTourReady, setTourReady } from '../../functions/TourReady';
+import { useNavigate } from 'react-router-dom';
 
 const Investasi = () => {
   const [goat, goatDispatch] = useReducer(goatReducer, []);
@@ -26,14 +28,8 @@ const Investasi = () => {
   const [noAccountModal, setNoAccountModal] = useState(false);
   const [loading, setLoading] = useState(false);
   const [deleteConfirm, setDeleteConfirm] = useState({ type: '', show: false });
-
-
-  useEffect(() => {
-    retrieveAllGoat();
-    retrieveAllFood();
-    retrieveAllMaintenance();
-    return () => { }
-  }, [])
+  const [isDataReady, setIsDataReady] = useState(false);
+  const navigate = useNavigate();
 
   const showTheModal = (title, description) => {
     setTitle(title);
@@ -41,60 +37,55 @@ const Investasi = () => {
     setVisibleModal(true);
   }
 
-  const retrieveAllGoat = async () => {
-    try {
-      await getAllGoat().then(
-        (resolve) => {
-          goatDispatch({
-            type: 'retrieve_goat',
-            data: [...resolve],
-          });
-        },
-        (reject) => { throw reject; }
-      );
-    } catch (error) {
-      showTheModal('Terjadi Kesalahan!', error.toString());
+  const scrollToOptions = () => {
+    const element = document.getElementById('options-container');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
     }
-  }
+  };
 
-  const retrieveAllFood = async () => {
-    try {
-      await getAllFood().then(
-        (resolve) => {
-          foodDispatch({
-            type: 'retrieve_food',
-            data: [...resolve],
-          });
-        },
-        (reject) => { throw reject; }
-      );
-    } catch (error) {
-      showTheModal('Terjadi Kesalahan!', error.toString());
-    }
-  }
+  useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [goats, foods, maintenances] = await Promise.all([
+          getAllGoat(),
+          getAllFood(),
+          getAllMaintenance()
+        ]);
 
-  const retrieveAllMaintenance = async () => {
-    try {
-      await getAllMaintenance().then(
-        (resolve) => {
-          maintenanceDispatch({
-            type: 'retrieve_maintenance',
-            data: [...resolve],
-          });
-        },
-        (reject) => { throw reject; }
-      );
-    } catch (error) {
-      showTheModal('Terjadi Kesalahan!', error.toString());
-    }
-  }
+        goatDispatch({ type: 'retrieve_goat', data: goats });
+        foodDispatch({ type: 'retrieve_food', data: foods });
+        maintenanceDispatch({ type: 'retrieve_maintenance', data: maintenances });
+
+        setIsDataReady(true);
+        setTourReady();
+      } catch (error) {
+        if (error.message && error.message.toLowerCase().includes('permission denied')) {
+          showTheModal('Silahkan Login/Daftar Terlebih Dahulu!');
+          setTimeout(() => {
+            navigate('/login', { replace: true });
+          }, 1500);
+        } else {
+          showTheModal('Terjadi Kesalahan!', error.toString());
+        }
+      }
+    };
+
+    fetchAll();
+
+    return () => {
+      resetTourReady();
+      setIsDataReady(false);
+    };
+  }, []);
+
 
   const renderGoat = () => {
     return (
-      <div className='flex flex-col items-center'>
+      <div className='flex flex-col items-center mb-10'>
         {/* Search */}
         <div className='flex flex-row w-1/3 border-2 border-[#5C5C5C] rounded-[10px] items-center self-center mb-11' >
-          <input type='text' placeholder='Cari nama kambing' onChange={(e) => setGoatSearch(e.target.value)} className='flex-1 text-sm text-[#333333] font-normal px-2 py-3 outline-none bg-transparent' />
+          <input type='text' placeholder='Cari Nama Ternak' onChange={(e) => setGoatSearch(e.target.value)} className='flex-1 text-sm text-[#333333] font-normal px-2 py-3 outline-none bg-transparent' />
           <AiOutlineSearch size={32} color='#858585' className='mr-2 cursor-pointer' />
         </div>
 
@@ -125,7 +116,7 @@ const Investasi = () => {
 
   const renderFood = () => {
     return (
-      <div className='flex flex-col items-center'>
+      <div className='flex flex-col items-center mb-10'>
 
         {/* Options Menu */}
         <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-food-card'>
@@ -146,7 +137,7 @@ const Investasi = () => {
 
   const renderMaintenance = () => {
     return (
-      <div className='flex flex-col items-center'>
+      <div className='flex flex-col items-center mb-10'>
 
         {/* Options Menu */}
         <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-maintenance-card'>
@@ -226,9 +217,13 @@ const Investasi = () => {
     <div className='flex flex-col justify-center items-center min-h-[300px] text-center'>
       <p className='text-md font-normal text-[#666666CC]'>{label}</p>
       {showButton && (
-        <button disabled className='bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4'>
+        <button
+          onClick={scrollToOptions}
+          className='bg-[#CAAA02] text-white text-base font-normal px-8 py-2 rounded-lg mt-4 cursor-pointer'
+        >
           Pilih
         </button>
+
       )}
     </div>
   );
@@ -260,74 +255,75 @@ const Investasi = () => {
       <div className='mx-16 flex flex-col mb-16 tour-goat-header min-h-screen pb-20'>
 
         <div className='text-black text-xl font-semibold w-full px-8 py-5 bg-[#D6F6D5]'>Pilih Investasimu</div>
-
-        <div className='w-full lg:h-[50vh] grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12 pb-4'>
-          {/* Section 1 - Penjelasan dan CTA */}
-          <div className='flex flex-col items-center justify-center p-6 border rounded'>
-            <p className='text-md text-black text-center mb-4'>
-              Kamu bisa memilih jenis ternak, jenis pakan, dan jenis perawatan di tabel ini
-            </p>
-            <button
-              onClick={() => {
-                if (localStorage.getItem('uid') === null) {
-                  setNoAccountModal(true);
-                } else if (localStorage.getItem('role') === 'admin') {
-                  showTheModal('Terjadi Kesalahan!', 'Admin tidak dapat melakukan transaksi!');
-                } else {
-                  if (confirmMaintenance != null) {
-                    doTransaction();
+        <div className="w-full flex flex-col gap-8">
+          <div className='w-full lg:h-[50vh] grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12 pb-4'>
+            {/* Section 1 - Penjelasan dan CTA */}
+            <div className='flex flex-col items-center justify-center p-6 border rounded'>
+              <p className='text-md text-black text-center mb-4'>
+                Kamu bisa memilih jenis ternak, jenis pakan, dan jenis perawatan di tabel ini
+              </p>
+              <button
+                onClick={() => {
+                  if (localStorage.getItem('uid') === null) {
+                    setNoAccountModal(true);
+                  } else if (localStorage.getItem('role') === 'admin') {
+                    showTheModal('Terjadi Kesalahan!', 'Admin tidak dapat melakukan transaksi!');
+                  } else {
+                    if (confirmMaintenance != null) {
+                      doTransaction();
+                    }
                   }
-                }
-              }}
-              className='bg-[#145412C2] text-white px-8 py-2 rounded-lg'
-            >
-              Investasi Sekarang
-            </button>
+                }}
+                className='bg-[#145412C2] text-white px-8 py-2 rounded-lg'
+              >
+                Investasi Sekarang
+              </button>
+            </div>
+
+            {/* Section 2 - Goat */}
+            <div className='p-4 border rounded'>
+              {confirmGoat ? (
+                <ConfirmCard data={confirmGoat} onRemove={() => setDeleteConfirm({ type: 'goat', show: true })} isHidden={confirmFood} />
+              ) : (
+                <PlaceholderCard label='Pilih jenis ternakmu' showButton={true} />
+              )}
+            </div>
+
+            {/* Section 3 - Food */}
+            <div className='p-4 border rounded'>
+              {confirmFood ? (
+                <ConfirmCard data={confirmFood} onRemove={() => setDeleteConfirm({ type: 'food', show: true })} isHidden={confirmMaintenance} />
+              ) : (
+                <PlaceholderCard label='Pilih jenis pakan ternakmu' showButton={!!confirmGoat} />
+              )}
+            </div>
+
+            {/* Section 4 - Maintenance */}
+            <div className='p-4 border rounded'>
+              {confirmMaintenance ? (
+                <ConfirmCard data={confirmMaintenance} onRemove={() => setDeleteConfirm({ type: 'maintenance', show: true })} />
+              ) : (
+                <PlaceholderCard label='Pilih jenis perawatan ternakmu' showButton={!!confirmFood} />
+              )}
+            </div>
           </div>
 
-          {/* Section 2 - Goat */}
-          <div className='p-4 border rounded'>
-            {confirmGoat ? (
-              <ConfirmCard data={confirmGoat} onRemove={() => setDeleteConfirm({ type: 'goat', show: true })} isHidden={confirmFood} />
-            ) : (
-              <PlaceholderCard label='Pilih jenis ternakmu' showButton={true} />
-            )}
-          </div>
 
-          {/* Section 3 - Food */}
-          <div className='p-4 border rounded'>
-            {confirmFood ? (
-              <ConfirmCard data={confirmFood} onRemove={() => setConfirmFood(null)} isHidden={confirmMaintenance} />
-            ) : (
-              <PlaceholderCard label='Pilih jenis pakan ternakmu' showButton={!!confirmGoat} />
-            )}
-          </div>
-
-          {/* Section 4 - Maintenance */}
-          <div className='p-4 border rounded'>
-            {confirmMaintenance ? (
-              <ConfirmCard data={confirmMaintenance} onRemove={() => setConfirmMaintenance(null)} />
-            ) : (
-              <PlaceholderCard label='Pilih jenis perawatan ternakmu' showButton={!!confirmFood} />
+          <div id="options-container" className="w-full">
+            <Loading show={!isDataReady} />
+            {isDataReady && (
+              confirmGoat && confirmFood && confirmMaintenance ? (
+                <div className="w-full h-16 mt-4" />
+              ) : (
+                confirmGoat
+                  ? (
+                    confirmFood ? renderMaintenance() : renderFood()
+                  )
+                  : renderGoat()
+              )
             )}
           </div>
         </div>
-
-
-        <div className="w-full">
-          {
-            confirmGoat && confirmFood && confirmMaintenance ? (
-              <div className="w-full h-16 mt-4" /> // Spacer 64px dengan margin atas
-            ) : (
-              confirmGoat
-                ? (
-                  confirmFood ? renderMaintenance() : renderFood()
-                )
-                : renderGoat()
-            )
-          }
-        </div>
-
       </div>
 
       {/* Footer */}

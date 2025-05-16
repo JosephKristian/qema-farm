@@ -25,12 +25,14 @@ const Goat = () => {
   const [goatWeight, setGoatWeight] = useState(0);
   const [goatTime, setGoatTime] = useState(0);
   const [goatType, setGoatType] = useState('');
+  const [goatLivestockTypes, setLivestockTypes] = useState('');
   const [goatPrice, setGoatPrice] = useState(0);
   const [goatSex, setGoatSex] = useState('');
   const [goatImage, setGoatImage] = useState({});
   const [loading, setLoading] = useState(false);
   const imageRef = useRef();
   const types = ['Dewasa', 'Muda', 'Cempe'];
+  const livestockTypes = ['Domba', 'Kambing'];
   const sex = ['Betina', 'Jantan'];
   const navigate = useNavigate();
 
@@ -47,6 +49,7 @@ const Goat = () => {
     setGoatWeight(prev => goatSelected === null ? 0 : goatSelected.weight);
     setGoatTime(prev => goatSelected === null ? 0 : goatSelected.time);
     setGoatType(prev => goatSelected === null ? '' : goatSelected.type);
+    setLivestockTypes(prev => goatSelected === null ? '' : goatSelected.livestockTypes);
     setGoatSex(prev => goatSelected === null ? '' : goatSelected.sex);
     setGoatPrice(prev => goatSelected === null ? 0 : goatSelected.price);
     return () => { }
@@ -64,6 +67,7 @@ const Goat = () => {
     setGoatWeight(0);
     setGoatTime(0);
     setGoatType('');
+    setLivestockTypes('');
     setGoatImage({});
   }
 
@@ -85,47 +89,35 @@ const Goat = () => {
 
   const addGoat = async () => {
     try {
-      if (validation()) {
-        setLoading(true);
-        const goatImageName = new Date().getTime();
-        await saveGoatImage(goatImageName, goatImage).then(
-          async (resolve) => {
-            const data = {
-              name: goatName,
-              type: goatType,
-              sex: goatSex,
-              weight: goatWeight,
-              time: goatTime,
-              price: parseInt(goatPrice),
-              image: resolve,
-              created_at: goatImageName,
-            };
-            await addNewGoat(data).then(
-              async (resolve) => {
-                await retrieveAllGoat();
-                setAddGoatModal(false);
-                resetForm();
-              },
-              (reject) => {
-                console.log(reject);
-                throw reject;
-              }
-            );
-          },
-          (reject) => {
-            console.log(reject);
-            throw reject;
-          }
-        );
-      } else {
-        throw 'Form harus diisi!';
-      }
+      if (!validation()) throw 'Form harus diisi dengan lengkap!';
+  
+      setLoading(true);
+      const goatImageName = new Date().getTime();
+      const uploadedImageUrl = await saveGoatImage(goatImageName, goatImage);
+  
+      const data = {
+        name: goatName,
+        type: goatType,
+        livestockTypes: goatLivestockTypes,
+        sex: goatSex,
+        weight: goatWeight,
+        time: goatTime,
+        price: parseInt(goatPrice),
+        image: uploadedImageUrl,
+        created_at: goatImageName,
+      };
+  
+      await addNewGoat(data);
+      await retrieveAllGoat();
+      setAddGoatModal(false);
+      resetForm();
+  
     } catch (error) {
       showTheModal('Terjadi Kesalahan!', error.toString());
     } finally {
       setLoading(false);
     }
-  }
+  };  
 
   const editGoat = async () => {
     try {
@@ -136,6 +128,7 @@ const Goat = () => {
           price: parseInt(goatPrice),
           sex: goatSex,
           type: goatType,
+          livestockTypes: goatLivestockTypes,
           time: goatTime,
           weight: goatWeight,
           image: goatSelected.image,
@@ -162,40 +155,46 @@ const Goat = () => {
   }
 
   const validation = () => {
-    if (goatName.length < 1) {
-      return false;
-    } else if (goatPrice.length < 1 || parseInt(goatPrice) === 0) {
-      return false;
-    } else if (goatWeight.length < 1 || parseInt(goatWeight) === 0) {
-      return false;
-    } else if (goatTime.length < 1 || parseInt(goatTime) === 0) {
-      return false;
-    } else if (goatType.length < 1) {
-      return false;
-    } else if (goatSex.length < 1) {
-      return false;
-    } else if (goatImage.name === undefined || goatImage.name === null) {
+    const errors = [];
+  
+    if (goatName.length < 1) errors.push('Nama kambing belum diisi.');
+    if (goatPrice.length < 1 || parseInt(goatPrice) === 0) errors.push('Harga belum diisi atau bernilai 0.');
+    if (goatWeight.length < 1 || parseInt(goatWeight) === 0) errors.push('Berat belum diisi atau bernilai 0.');
+    if (goatTime.length < 1 || parseInt(goatTime) === 0) errors.push('Waktu belum diisi atau bernilai 0.');
+    if (goatType.length < 1) errors.push('Kategori umur belum dipilih.');
+    if (goatLivestockTypes.length < 1) errors.push('Jenis ternak belum dipilih.');
+    if (goatSex.length < 1) errors.push('Jenis kelamin belum dipilih.');
+    if (!goatImage?.name) errors.push('Gambar belum dipilih.');
+  
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
       return false;
     }
+  
     return true;
-  }
+  };
 
+  
   const validationForEdit = () => {
-    if (goatName.length < 1) {
-      return false;
-    } else if (goatPrice.length < 1 || parseInt(goatPrice) === 0) {
-      return false;
-    } else if (goatWeight.length < 1 || parseInt(goatWeight) === 0) {
-      return false;
-    } else if (goatTime.length < 1 || parseInt(goatTime) === 0) {
-      return false;
-    } else if (goatType.length < 1) {
-      return false;
-    } else if (goatSex.length < 1) {
+    const errors = [];
+  
+    if (!goatName?.length) errors.push('Nama kambing belum diisi.');
+    if (!goatPrice || parseInt(goatPrice) === 0) errors.push('Harga belum diisi atau bernilai 0.');
+    if (!goatWeight || parseInt(goatWeight) === 0) errors.push('Berat belum diisi atau bernilai 0.');
+    if (!goatTime || parseInt(goatTime) === 0) errors.push('Waktu belum diisi atau bernilai 0.');
+    if (!goatType?.length) errors.push('Kategori umur belum dipilih.');
+    if (!goatLivestockTypes?.length) errors.push('Jenis ternak belum dipilih.');
+    if (!goatSex?.length) errors.push('Jenis kelamin belum dipilih.');
+    
+  
+    if (errors.length > 0) {
+      alert(errors.join('\n'));
       return false;
     }
+  
     return true;
-  }
+  };
+  
 
   const deleteGoat = async () => {
     try {
@@ -232,6 +231,7 @@ const Goat = () => {
               onClick={() => {
                 setAddGoatModal(true);
                 setGoatType(types[0]);
+                setLivestockTypes(livestockTypes[0]);
                 setGoatSex(sex[0]);
               }}
               className='bg-[#145412] text-white font-medium text-base sm:text-lg rounded-md px-4 py-2 w-full sm:w-auto'
@@ -252,8 +252,9 @@ const Goat = () => {
             <table className="bg-white w-full min-w-[900px] table-fixed border-collapse border text-sm">
               <thead>
                 <tr className='text-white text-xs sm:text-sm md:text-base'>
-                  <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Kambing</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Ternak</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Jenis</th>
+                  <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Kategori Umur</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Berat per Waktu</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Jenis Kelamin</th>
                   <th className='bg-gray-600 border border-white py-4 px-2 sm:px-4'>Harga</th>
@@ -267,6 +268,7 @@ const Goat = () => {
                     .map((element, index) => (
                       <tr key={element.uid} className={`${index % 2 === 0 ? 'bg-gray-100' : ''} text-xs sm:text-sm md:text-base font-medium`}>
                         <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.name}</td>
+                        <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.livestockTypes}</td>
                         <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.type}</td>
                         <td className='border border-slate-200 p-2 text-[#333333]'>{element.weight} kg / {element.time} bulan</td>
                         <td className='border border-slate-200 p-2 text-[#333333] capitalize'>{element.sex}</td>
@@ -375,6 +377,19 @@ const Goat = () => {
           {/* Type */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <select defaultValue={livestockTypes[0]} onChange={(e) => setLivestockTypes(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {livestockTypes.map((element) =>
+              (
+                <option>
+                  {element}
+                </option>
+              )
+              )}
+            </select>
+          </div>
+          {/* Kategori Umur */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Kategori Umur</p>
             <select defaultValue={types[0]} onChange={(e) => setGoatType(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
               {types.map((element) =>
               (
@@ -457,6 +472,19 @@ const Goat = () => {
           {/* Type */}
           <div className='flex flex-col justify-between items-start space-y-2'>
             <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <select defaultValue={goatSelected === null ? '' : goatSelected.livestockTypes} onChange={(e) => setGoatType(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
+              {livestockTypes.map((element) =>
+              (
+                <option>
+                  {element}
+                </option>
+              )
+              )}
+            </select>
+          </div>
+          {/* Kategori Umur */}
+          <div className='flex flex-col justify-between items-start space-y-2'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
             <select defaultValue={goatSelected === null ? '' : goatSelected.type} onChange={(e) => setGoatType(e.target.value)} className='w-full border border-gray-200 rounded-md outline-none p-2'>
               {types.map((element) =>
               (
@@ -520,6 +548,10 @@ const Goat = () => {
           </div>
           <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
             <p className='text-base font-medium text-[#333333] flex-1'>Jenis</p>
+            <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.livestockTypes}</p>
+          </div>
+          <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>
+            <p className='text-base font-medium text-[#333333] flex-1'>Kategori Umur</p>
             <p className='w-full border border-gray-200 rounded-md p-2'>{goatSelected === null ? '' : goatSelected.type}</p>
           </div>
           <div className='flex flex-col justify-between items-start space-y-2 max-w-lg'>

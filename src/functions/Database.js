@@ -1,5 +1,5 @@
 import { database } from '../config/FirebaseConfig';
-import { ref, get, orderByChild, equalTo, query, push, set, orderByValue, remove } from 'firebase/database';
+import { ref, get, orderByChild, equalTo, query, push, set, orderByValue, remove, update } from 'firebase/database';
 
 const usersRef = 'users/';
 const goatsRef = 'goats/';
@@ -41,6 +41,29 @@ export const checkSimilarPhone = (phone) => {
   });
 }
 
+export const hasUserSeenTourForPage = (uid, path) => {
+  return new Promise((resolve, reject) => {
+    const pageKey = encodeURIComponent(path); // amankan path sebagai key
+    const userRef = ref(database, `${usersRef}${uid}/toursSeen/${pageKey}`);
+    get(userRef)
+      .then(snapshot => resolve(snapshot.val() === true))
+      .catch(error => reject(error));
+  });
+};
+
+// Update status user sudah melihat tour
+export const markTourAsSeenForPage = (uid, path) => {
+  return new Promise((resolve, reject) => {
+    const pageKey = encodeURIComponent(path);
+    const userRef = ref(database, `${usersRef}${uid}/toursSeen/${pageKey}`);
+    set(userRef, true)
+      .then(() => resolve(true))
+      .catch(error => reject(error));
+  });
+};
+
+
+
 // Add new User to Database
 export const addNewUsersToDatabase = (uid, _name, _email, _phone, _password) => {
   return new Promise((resolve, reject) => {
@@ -51,6 +74,7 @@ export const addNewUsersToDatabase = (uid, _name, _email, _phone, _password) => 
       password: _password,
       avatar: "",
       role: 'user',
+      toursSeen: {},
     }).catch((error) => {
       reject(error);
     });
@@ -229,19 +253,32 @@ export const newTransaction = (theGoat, theFood, theMaintenance, uid) => {
       goat: theGoat,
       food: theFood,
       maintenance: theMaintenance,
-      user: uid, 
+      user: uid,
       created_by: {
         uid: uid,
-        name: localStorage.getItem('name') || 'Unknown', 
+        name: localStorage.getItem('name') || 'Unknown',
       },
       confirmed: false,
       created_at: timeNow.getTime(),
+      updated_at: timeNow.getTime(),
     }).then((snapshot) => {
       resolve(snapshot.key);
     }).catch((error) => reject(error));
   });
 }
 
+export const saveWeight = async (transactionId, weight) => {
+  try {
+    await update(ref(database, `${transactionsRef}/${transactionId}`), {
+      weight: parseFloat(weight),
+      updated_at: new Date().getTime(), // jika ingin update timestamp juga
+    });
+    alert('Berat berhasil disimpan!');
+  } catch (error) {
+    console.error('Gagal menyimpan berat:', error);
+    alert('Terjadi kesalahan saat menyimpan berat.');
+  }
+};
 
 // Get Transaction
 export const getTransaction = (uid) => {
@@ -272,6 +309,8 @@ export const confirmTransaction = (uid, transaction) => {
     set(ref(database, `${transactionsRef}${uid}`), {
       ...transaction,
       confirmed: true,
+      confirmed_at: Date.now(), 
+      updated_at: Date.now(), 
     }).then(() => {
       resolve(true);
     }).catch((error) => reject(error));
