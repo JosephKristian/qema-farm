@@ -29,15 +29,15 @@ const Portofolio = () => {
   const [loading, setLoading] = useState(true);
   const uid = localStorage.getItem('uid');
 
-  const [averagePrice, setAveragePrice] = useState(3500000); 
+  const [averagePrice, setAveragePrice] = useState(3500000);
   const [loadingPrices, setLoadingPrices] = useState(true);
   // Harga awal per ekor
   useEffect(() => {
     const fetchHargaKambing = async () => {
       try {
-        const goats = await getAllGoat(); 
+        const goats = await getAllGoat();
         if (goats.length === 0) {
-          setAveragePrice(3500000); 
+          setAveragePrice(3500000);
           setLoadingPrices(false);
           return;
         }
@@ -69,12 +69,17 @@ const Portofolio = () => {
 
   useEffect(() => {
     if (!uid) return;
+
     getAllTransaction().then((data) => {
-      const filtered = data.filter(trx => trx.user === uid);
+      const filtered = data
+        .filter(trx => trx.user === uid)
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at)); // Urut dari terbaru ke terlama
+
       setUserTransactions(filtered);
       setLoading(false);
     });
   }, [uid]);
+
 
   // Kalkulasi
   const calculateInvestment = (transactions) => {
@@ -289,6 +294,8 @@ const Portofolio = () => {
         </div>
       </div>
 
+
+
       {/* Tabel Detail Kepemilikan Kambing */}
       {uid && (
         <div className="mt-16">
@@ -299,18 +306,44 @@ const Portofolio = () => {
                 <tr>
                   <th className="py-2 px-4 border">No</th>
                   <th className="py-2 px-4 border">Kode Ternak</th>
-                  <th className="py-2 px-4 border">Berat (kg)</th>
+                  <th className="py-2 px-4 border">Berat Awal (kg)</th>
+                  <th className="py-2 px-4 border">Berat Terkini (kg)</th>
                   <th className="py-2 px-4 border">Harga Investasi</th>
+                  <th className="py-2 px-4 border">Tanggal Dibuat</th>       {/* Kolom baru */}
+                  <th className="py-2 px-4 border">Tanggal Konfirmasi</th>  {/* Kolom baru */}
                 </tr>
               </thead>
               <tbody>
                 {userTransactions.map((trx, idx) => (
                   <tr key={idx} className="text-center">
                     <td className="py-2 px-4 border">{idx + 1}</td>
-                    <td className="py-2 px-4 border">{trx.goat?.code || `GOAT-${uid?.slice(0, 4).toUpperCase()}-${idx + 1}`}</td>
+                    <td className="py-2 px-4 border">{trx.goat?.code || `${trx.goat?.livestockTypes}-${trx.goat?.name}-${trx.goat?.type}-${uid?.slice(0, 4).toUpperCase()}${trx.uid}`}</td>
                     <td className="py-2 px-4 border">{trx.goat?.weight ? `${trx.goat.weight} kg` : '-'}</td>
+                    <td className="py-2 px-4 border">{trx.weight ? `${trx.weight} kg` : '-'}</td>
                     <td className="py-2 px-4 border">
                       Rp. {numberFormatter.format(trx.goat?.price || 0).replaceAll(',', '.')}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {trx.created_at
+                        ? new Date(trx.created_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
+                    </td>
+                    <td className="py-2 px-4 border">
+                      {trx.confirmed_at
+                        ? new Date(trx.confirmed_at).toLocaleString('id-ID', {
+                          day: '2-digit',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })
+                        : '-'}
                     </td>
                   </tr>
                 ))}
@@ -319,6 +352,7 @@ const Portofolio = () => {
           </div>
         </div>
       )}
+
 
       {/* Invest Monitoring or No Portofolio */}
       {uid === null ? (
