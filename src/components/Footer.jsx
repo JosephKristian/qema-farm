@@ -42,6 +42,7 @@ const Footer = () => {
             {localStorage.getItem('role') === 'admin' && (
               <p className="text-[#145412] text-xl font-medium mb-4 cursor-pointer" onClick={() => navigate('/admin')}>Admin Panel</p>
             )}
+            <p className="text-[#145412] text-xl font-medium mb-4 cursor-pointer" onClick={() => navigate('/faq')}>FAQ</p>
           </div>
         </div>
       </div>
