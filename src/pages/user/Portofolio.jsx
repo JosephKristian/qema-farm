@@ -202,6 +202,18 @@ const Portofolio = () => {
     <div>
       <Navbar />
 
+      
+      {/* Tombol Mengambang Panduan */}
+      <button
+        onClick={() => {
+          window.startTour(undefined, true)
+        }}
+        className="fixed bottom-6 right-6 z-50 bg-[#145412] text-white px-4 py-3 rounded-full shadow-lg flex items-center space-x-2 hover:bg-green-700 transition duration-300"
+      >
+        <span className="text-lg font-semibold">?</span>
+        <span className="hidden sm:inline">Panduan</span>
+      </button>
+
       {/* Top Panel */}
       <div className={`${localStorage.getItem('uid') === null ? 'hidden' : 'bg-[#dad6d6] flex justify-center py-8 px-4 sm:px-8 mb-12'}`}>
         <div className="relative w-full max-w-6xl">

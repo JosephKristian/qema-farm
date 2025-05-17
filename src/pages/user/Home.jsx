@@ -248,6 +248,17 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
         <Navbar />
       </div>
 
+      {/* Tombol Mengambang Panduan */}
+      <button
+        onClick={() => {
+          window.startTour(undefined, true)
+        }}
+        className="fixed bottom-6 right-6 z-50 bg-[#145412] text-white px-4 py-3 rounded-full shadow-lg flex items-center space-x-2 hover:bg-green-700 transition duration-300"
+      >
+        <span className="text-lg font-semibold">?</span>
+        <span className="hidden sm:inline">Panduan</span>
+      </button>
+
       {/* Top Panel */}
       <div className='gradient-green-yellow h-[86vh] w-full rounded-b-[40%] flex sm:flex-row flex-col-reverse items-center sm:px-16 px-8 pt-4 pb-[10vh] tour-dashboard'>
         <div className='flex-1 flex flex-col items-start text-white'>

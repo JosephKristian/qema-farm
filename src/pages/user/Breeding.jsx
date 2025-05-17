@@ -11,6 +11,7 @@ import Breeding4 from '../../assets/breeding_4.png';
 import { addNewPackageTransaction, getAdmin, getAllPackage } from '../../functions/Database';
 import { packageReducer } from '../../config/Reducer';
 import { setTourReady } from '../../functions/TourReady';
+import { useNavigate } from 'react-router-dom';
 
 const Breeding = () => {
   const format = Intl.NumberFormat();
@@ -22,6 +23,7 @@ const Breeding = () => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [visibleModal, setVisibleModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     retrieveAllPackage();
@@ -63,7 +65,14 @@ const Breeding = () => {
         (reject) => { throw reject; }
       );
     } catch (error) {
-      showTheModal('Terjadi Kesalahan! [addNewPackageTransaction]', error.toString());
+      if (error.message && error.message.toLowerCase().includes('permission denied')) {
+        showTheModal('Silahkan Login/Daftar Terlebih Dahulu!');
+        setTimeout(() => {
+          navigate('/login', { replace: true });
+        }, 1500);
+      } else {
+        showTheModal('Terjadi Kesalahan!', error.toString());
+      }
     } finally {
       setLoading(false);
     }
@@ -133,6 +142,17 @@ const Breeding = () => {
     <div>
       {/* Navbar */}
       <Navbar />
+      
+      {/* Tombol Mengambang Panduan */}
+      <button
+        onClick={() => {
+          window.startTour(undefined, true)
+        }}
+        className="fixed bottom-6 right-6 z-50 bg-[#145412] text-white px-4 py-3 rounded-full shadow-lg flex items-center space-x-2 hover:bg-green-700 transition duration-300"
+      >
+        <span className="text-lg font-semibold">?</span>
+        <span className="hidden sm:inline">Panduan</span>
+      </button>
 
       {/* Top Panel */}
       <div className='gradient-green-white w-full pt-8 px-6 mb-16 overflow-hidden relative'>
