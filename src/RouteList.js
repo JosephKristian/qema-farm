@@ -18,9 +18,11 @@ import ConfirmationPackage from './pages/admin/ConfirmationPackage';
 import PackageTransaction from './pages/admin/PackageTransaction';
 import Package from './pages/admin/Package';
 import SearchBar from './pages/SearchPage';
+import FAQ from './pages/user/FAQ';
 
 const routeList = [
   { path: '/', element: <Home /> },
+  { path: '/faq', element: <FAQ /> },
   { path: '/login', element: <Login /> },
   { path: '/register', element: <Register /> },
   { path: '/search', element: <SearchBar /> },

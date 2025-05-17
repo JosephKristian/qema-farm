@@ -23,7 +23,7 @@ const Footer = () => {
         <div className="flex-[3] flex sm:flex-row flex-col items-center text-center sm:text-left">
           <img src={Logo} alt="Logo" className="sm:h-44 h-32" />
           <p className="text-[#333333] font-medium text-sm sm:mx-4 mx-1 mt-4 sm:mt-0">
-            Qemafarm adalah sebuah website bisnis yang berfokus pada peternakan hewan kambing, domba dan sapi. Yang mana didalamnya terdapat beberapa fitur sebagai media informasi dan media bisnis. Tujuan utama website ini adalah berbisnis kambing tanpa harus memiliki skill beternak dan lahan sebagai media perawatan, atau nama lainnya berinvestasi pada sektor rill di bidang peternakan.
+            Qema farm adalah sebuah website bisnis yang berfokus pada peternakan hewan kambing, domba dan sapi. Yang mana di dalamnya terdapat beberapa fitur sebagai media informasi dan media bisnis. Tujuan utama website ini adalah berbisnis kambing tanpa harus memiliki skill beternak dan lahan sebagai media perawatan, atau nama lainnya berinvestasi pada sektor rill di bidang peternakan.
           </p>
         </div>
 

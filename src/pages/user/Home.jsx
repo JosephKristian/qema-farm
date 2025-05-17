@@ -25,6 +25,7 @@ import Slide3 from '../../assets/slide_3.png';
 import GoatWhite from '../../assets/goat-white.png';
 import Maintenance from '../../assets/maintenance.png';
 import Grass from '../../assets/grass.png';
+import { setTourReady } from '../../functions/TourReady';
 
 
 const Home = () => {
@@ -184,6 +185,10 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
     }
   }, [visibleModal]);
 
+  useEffect(() => {
+    setTourReady();
+  }, []);
+
   const closeModal = () => {
     setGoatContent(false);
     setFoodContent(false);
@@ -246,7 +251,7 @@ Untuk 100 kg kotoran kambing dibutuhkan 2 tutup botol cairan EM4 dan dicampurkan
       {/* Top Panel */}
       <div className='gradient-green-yellow h-[86vh] w-full rounded-b-[40%] flex sm:flex-row flex-col-reverse items-center sm:px-16 px-8 pt-4 pb-[10vh] tour-dashboard'>
         <div className='flex-1 flex flex-col items-start text-white'>
-          <h1 className='lg:text-6xl md:text-4xl sm:text-4xl mb-6 font-bold'>SELAMAT DATANG DI QEMAFARM!</h1>
+          <h1 className='lg:text-6xl md:text-4xl sm:text-4xl mb-6 font-bold'>SELAMAT DATANG DI QEMA FARM!</h1>
           <div className='flex border-l-[#FCD403] border-l-[10px] pl-4 lg:text-base text-sm'>
             <p>QEMA FARM membantu anda untuk dapat berinvestasi  di sektor rill secara mudah dan terpercaya. dapatkan mabing investasimu di sini, dan dapatkan kekuntungan maksismal bersama kami!</p>
           </div>

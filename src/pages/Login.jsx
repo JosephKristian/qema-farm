@@ -101,8 +101,8 @@ const Login = () => {
       <div className='hidden gradient-green-lightgreen text-white p-12 overflow-auto flex-1 sm:flex flex-col justify-between items-center rounded-r-2xl'>
         <h1 className='font-bold text-3xl text-center'>SELAMAT DATANG KEMBALI DI</h1>
         <img src={Logo} alt='Logo' className='w-[300px] my-2' />
-        <h1 className='font-bold text-3xl my-2'>QEMAFARM</h1>
-        <p className='text-center text-xl leading-tight'>QEMAFARM  sebuah website bisnis yang berfokus pada peternakan hewan kambing, domba dan sapi. Yang mana didalamnya terdapat beberapa fitur sebagai media informasi dan media bisnis. Yang mana tujuan utama pada website ini adalah berbisnis kambing tanpa harus memiliki skill beternak dan lahan sebagai media perawatan, atau nama lainnya berinvestasi pada sektor rill dibilang peternakan.</p>
+        <h1 className='font-bold text-3xl my-2'>QEMA FARM</h1>
+        <p className='text-center text-xl leading-tight'>QEMA FARM  sebuah website bisnis yang berfokus pada peternakan hewan kambing, domba dan sapi. Yang mana di dalamnya terdapat beberapa fitur sebagai media informasi dan media bisnis. Yang mana tujuan utama pada website ini adalah berbisnis kambing tanpa harus memiliki skill beternak dan lahan sebagai media perawatan, atau nama lainnya berinvestasi pada sektor rill dibilang peternakan.</p>
       </div>
 
       {/* Right Panel */}

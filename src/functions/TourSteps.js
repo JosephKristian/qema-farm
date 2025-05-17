@@ -33,11 +33,11 @@ const tourSteps = {
     '/breeding': [
         {
             selector: '.tour-breeding-header',
-            content: 'Selamat datang di halaman Breeding QEMAFARM! Di sini Anda dapat memilih paket breeding terbaik untuk kambing Anda.',
+            content: 'Selamat datang di halaman Breeding QEMA FARM! Di sini Anda dapat memilih paket breeding terbaik untuk kambing Anda.',
         },
         {
             selector: '.tour-breeding-description',
-            content: 'Inilah penjelasan singkat tentang layanan breeding QEMAFARM. Kami memberikan jasa breeding bersama perawatan, monitoring, dan edukasi langsung di peternakan.',
+            content: 'Inilah penjelasan singkat tentang layanan breeding QEMA FARM. Kami memberikan jasa breeding bersama perawatan, monitoring, dan edukasi langsung di peternakan.',
         },
         {
             selector: '.tour-breeding-chosen',
@@ -67,12 +67,12 @@ const tourSteps = {
             content: 'Klik kartu ternak untuk memilih ternak yang ingin diinvestasikan.',
         },
         {
-            selector: '.tour-food-card',
-            content: 'Pilih jenis makanan yang akan diberikan untuk ternak.',
+            selector: '.tour-invest-card',
+            content: 'Setelah itu pilihanmu akan masuk ke tabel ini.',
         },
         {
-            selector: '.tour-maintenance-card',
-            content: 'Pilih jenis perawatan tambahan yang akan diberikan.',
+            selector: '.tour-invest-button',
+            content: 'Setelah memihlih ternak, pilih makanan dan perawatan yang sesuai. maka tombol investasi dapat digunakan',
         },
     ],
 
@@ -145,6 +145,24 @@ const tourSteps = {
         {
             selector: '.tour-statistic-export',
             content: 'Ekspor data statistik ke format Excel atau PDF.',
+        },
+    ],
+    '/portofolio': [
+        {
+            selector: '.tour-portofolio-cards',
+            content: 'Panel sebelah kiri berisi berbagai informasi dan fitur yang tersedia dalam bentuk kartu.',
+        },
+        {
+            selector: '.tour-portofolio-simulation-title',
+            content: 'Bagian simulasi kalkulasi harga ternak untuk per 3 bulan, baik di hari biasa maupun Idul Adha.',
+        },
+        {
+            selector: '.tour-portofolio-table-ternak',
+            content: 'Tabel detail kepemilikan ternak milikmu, termasuk berat awal dan terkini.',
+        },
+        {
+            selector: '.tour-portofolio-table-paket',
+            content: 'Tabel transaksi paket yang telah kamu lakukan, termasuk informasi harga dan waktu.',
         },
     ],
 

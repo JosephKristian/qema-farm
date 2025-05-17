@@ -12,6 +12,7 @@ import Decoration1 from '../../assets/decoration-box-1.png';
 import Decoration2 from '../../assets/decoration-box-2.png';
 import NoPortofolio from '../../assets/no_portofolio.png';
 import { getAllGoat, getAllPackageTransaction, getAllTransaction } from '../../functions/Database';
+import { setTourReady } from '../../functions/TourReady';
 
 // Format angka
 const numberFormatter = new Intl.NumberFormat('id-ID', {
@@ -88,6 +89,8 @@ const Portofolio = () => {
       setUserPackageTransactions(filtered);
       setLoading(false);
     });
+
+    setTourReady();
 
   }, [uid]);
 
@@ -211,7 +214,7 @@ const Portofolio = () => {
       <div className="px-4 sm:px-8 mb-4">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 xl:gap-12">
           {/* Left Panel */}
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-6 tour-portofolio-cards">
             {data.map((item, index) => (
               <div key={index} className="rounded-2xl bg-[#D6F6D5] px-4 pb-4 pt-6 relative overflow-hidden shadow-lg flex flex-col space-y-4">
                 {item.deco && <img src={item.deco} alt="/" className="absolute right-0 bottom-0 w-16 opacity-20" />}
@@ -226,7 +229,7 @@ const Portofolio = () => {
           </div>
 
           {/* Right Panel */}
-          <div className="lg:col-span-3 flex flex-col items-center">
+          <div className="lg:col-span-3 flex flex-col items-center tour-portofolio-simulation-title">
             <h1 className='text-black text-lg sm:text-2xl font-bold mb-6 text-center'>Simulasi dan kalkulasi harga ternak per/3bulan</h1>
             <div className='w-full border-2 border-[#EBEBEB] rounded-xl px-4 sm:px-6 py-10 sm:py-14'>
               {/* Button for selecting special day */}
@@ -309,7 +312,7 @@ const Portofolio = () => {
 
       {/* Tabel Detail Kepemilikan Kambing */}
       {uid && (
-        <div className="mt-16">
+        <div className="mt-16 tour-portofolio-table-ternak">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Kepemilikan Ternak</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
@@ -366,7 +369,7 @@ const Portofolio = () => {
 
       {/* Tabel Detail Transaksi Paket oleh User */}
       {uid && (
-        <div className="mt-16">
+        <div className="mt-16 tour-portofolio-table-paket">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Transaksi Paket</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
@@ -387,7 +390,7 @@ const Portofolio = () => {
                     <td className="py-2 px-4 border">{idx + 1}</td>
                     <td className="py-2 px-4 border">{trx.name}{trx.uid || trx.key}</td>
                     <td className="py-2 px-4 border">
-                      {trx.goat?.weight ? `${trx.weight} kg` : '-'}
+                      {trx.goat?.weight ? `${trx.goat?.weight} kg` : '-'}
                     </td>
                     <td className="py-2 px-4 border">
                       {trx.weight ? `${trx.weight} kg` : '-'}

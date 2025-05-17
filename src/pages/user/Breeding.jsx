@@ -136,10 +136,10 @@ const Breeding = () => {
       <div className='gradient-green-white w-full pt-8 px-6 mb-16 overflow-hidden relative'>
         <div className='flex flex-col space-y-5 absolute top-[100px] sm:top-[120px] left-[16px] sm:left-[64px]'>
           <h1 className='text-black text-[30px] sm:text-[40px] font-bold max-w-[832px] relative tour-breeding-header'>
-            Perbanyak kambingmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMAFARM</span>
+            Perbanyak ternakmu dengan <span className='text-[#145412]'>BREEDING</span> bersama <span className='text-[#145412]'>QEMA FARM</span>
           </h1>
-          <p className='font-inter text-[#333333] text-base sm:text-xl font-normal max-w-[420px] relative tour-breeding-description'>
-            QEMAFARM memberikan jasa breeding untuk kamu yang berinvestasi dengan kami, bersama dengan perawatan, dll.
+          <p className='font-inter text-[#E4E4E4] text-base sm:text-xl font-normal max-w-[420px] relative tour-breeding-description'>
+            QEMA FARM memberikan jasa breeding untuk kamu yang berinvestasi dengan kami, bersama dengan perawatan, dll.
           </p>
         </div>
         <div className='w-full flex flex-row-reverse justify-between items-end space-x-4'>
@@ -156,7 +156,7 @@ const Breeding = () => {
           <img src={Breeding2} alt='/' className='rounded-t-full' />
         </div>
         <div className='col-span-2 flex flex-col space-y-6'>
-          <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk kambingmu di sini</h1>
+          <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk ternakmu di sini</h1>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 tour-breeding-chosen'>
             {rendered_choosen()}
           </div>

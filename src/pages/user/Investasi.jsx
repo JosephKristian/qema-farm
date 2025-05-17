@@ -256,7 +256,7 @@ const Investasi = () => {
 
         <div className='text-black text-xl font-semibold w-full px-8 py-5 bg-[#D6F6D5]'>Pilih Investasimu</div>
         <div className="w-full flex flex-col gap-8">
-          <div className='w-full lg:h-[50vh] grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12 pb-4'>
+          <div className='w-full lg:h-[50vh] grid grid-cols-1 lg:grid-cols-4 gap-4 mb-12 pb-4 tour-invest-card'>
             {/* Section 1 - Penjelasan dan CTA */}
             <div className='flex flex-col items-center justify-center p-6 border rounded'>
               <p className='text-md text-black text-center mb-4'>
@@ -274,7 +274,7 @@ const Investasi = () => {
                     }
                   }
                 }}
-                className='bg-[#145412C2] text-white px-8 py-2 rounded-lg'
+                className='bg-[#145412C2] text-white px-8 py-2 rounded-lg tour-invest-button'
               >
                 Investasi Sekarang
               </button>

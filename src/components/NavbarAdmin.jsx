@@ -29,7 +29,7 @@ const NavbarAdmin = () => {
         onClick={() => navigate('/admin')}
         className="w-full md:w-1/3 text-white text-2xl sm:text-3xl font-semibold cursor-pointer text-center md:text-left"
       >
-        QEMAFARM
+        QEMA FARM
       </div>
 
       {/* Info + Tombol */}

@@ -304,7 +304,7 @@ const Food = () => {
             <input type='text' defaultValue='' onChange={(e) => setFoodName(e.target.value)} placeholder='Nama Pakan' className='w-full border border-gray-200 rounded-md outline-none p-2' />
           </div>
           <div className='flex flex-col justify-between items-start space-y-2'>
-            <p className='text-base font-medium text-[#333333] flex-1'>Email</p>
+            <p className='text-base font-medium text-[#333333] flex-1'>Deskripsi</p>
             <textarea defaultValue='' onChange={(e) => setFoodDescription(e.target.value)} placeholder='Deskripsi Pakan' rows={4} className='w-full border border-gray-200 rounded-md outline-none p-2'></textarea>
           </div>
           <div className='flex flex-row justify-end items-center space-x-4 pt-8'>
