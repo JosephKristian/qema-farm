@@ -51,6 +51,10 @@ const tourSteps = {
             selector: '.tour-breeding-options',
             content: 'Silakan pilih salah satu paket breeding yang tersedia. Setiap paket memiliki fitur dan harga yang berbeda.',
         },
+        {
+            selector: '.tour-breeding-chosen-2',
+            content: 'Pilihan akan masuk ke tabel ini dan nanti akan muncul tombol transaksi dibawah tabel.',
+        },
     ],
 
     '/investasi': [

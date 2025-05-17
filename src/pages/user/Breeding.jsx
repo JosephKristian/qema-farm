@@ -10,6 +10,7 @@ import Breeding3 from '../../assets/breeding_3.png';
 import Breeding4 from '../../assets/breeding_4.png';
 import { addNewPackageTransaction, getAdmin, getAllPackage } from '../../functions/Database';
 import { packageReducer } from '../../config/Reducer';
+import { setTourReady } from '../../functions/TourReady';
 
 const Breeding = () => {
   const format = Intl.NumberFormat();
@@ -38,6 +39,7 @@ const Breeding = () => {
         },
         (reject) => { throw reject; }
       );
+      setTourReady();
     } catch (error) {
       showTheModal('Terjadi Kesalahan! [retrieveAllPackage]', error.toString());
     }
@@ -155,7 +157,7 @@ const Breeding = () => {
         <div>
           <img src={Breeding2} alt='/' className='rounded-t-full' />
         </div>
-        <div className='col-span-2 flex flex-col space-y-6'>
+        <div className='col-span-2 flex flex-col space-y-6 tour-breeding-chosen-2'>
           <h1 className='font-bold text-black text-[22px] sm:text-[28px]'>Pilih paket breeding dan perawatan pasca breeding untuk ternakmu di sini</h1>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 tour-breeding-chosen'>
             {rendered_choosen()}
