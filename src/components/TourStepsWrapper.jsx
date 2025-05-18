@@ -11,29 +11,29 @@ const TourStepsWrapper = () => {
 
   // Fungsi global untuk trigger tour manual
   useEffect(() => {
-    window.startTour = (path = location.pathname, force = false) => {
-      const steps = tourSteps[path] || [];
-      if (steps.length === 0) return;
-
-      setSteps(steps);
-      setIsOpen(true);
-
+    window.startTour = async (path = location.pathname, force = false) => {
       const auth = getAuth();
       const user = auth.currentUser;
-
+  
+      let steps = tourSteps[path] || [];
+  
+      // Jika user login, filter tour-login-button
       if (user) {
         steps = steps.filter(step => step.selector !== '.tour-login-button');
       }
-
+  
       if (steps.length === 0) return;
-
+  
+      setSteps(steps);
+      setIsOpen(true);
+  
       if (user && !force) {
-        markTourAsSeenForPage(user.uid, path); // tandai sebagai seen
+        await markTourAsSeenForPage(user.uid, path); // tandai sebagai seen
       } else if (!user && !force) {
         localStorage.setItem(`tourSeen:${path}`, 'true');
       }
     };
-  }, [location.pathname, setSteps, setIsOpen]);
+  }, [location.pathname, setSteps, setIsOpen]);  
 
   // Auto trigger jika belum pernah lihat
   useEffect(() => {
