@@ -21,6 +21,12 @@ const TourStepsWrapper = () => {
       const auth = getAuth();
       const user = auth.currentUser;
 
+      if (user) {
+        steps = steps.filter(step => step.selector !== '.tour-login-button');
+      }
+
+      if (steps.length === 0) return;
+
       if (user && !force) {
         markTourAsSeenForPage(user.uid, path); // tandai sebagai seen
       } else if (!user && !force) {
