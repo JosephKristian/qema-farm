@@ -6,27 +6,7 @@ const tourSteps = {
         },
         {
             selector: '.tour-dashboard',
-            content: 'Ini adalah ilustrasi panel utama dashboard Qema Farm.',
-        },
-        {
-            selector: '.tour-goat',
-            content: 'Klik di sini untuk melihat berbagai jenis ternak.',
-        },
-        {
-            selector: '.tour-food',
-            content: 'Klik di sini untuk melihat jenis pakan ternak.',
-        },
-        {
-            selector: '.tour-maintenance',
-            content: 'Klik di sini untuk melihat daftar perawatan ternak.',
-        },
-        {
-            selector: '.tour-chart',
-            content: 'Bagian ini menampilkan grafik harga jual ternak terkini.',
-        },
-        {
-            selector: '.tour-article',
-            content: 'Bagian artikel yang mengedukasi tentang pengelolaan limbah ternak.',
+            content: 'Ini adalah panel utama yang akan menampilkan informasi penting di dashboard Anda',
         },
         {
             selector: '.tour-login-button',
