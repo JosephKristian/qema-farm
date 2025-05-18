@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState } from 'react';
+import React, { useReducer, useEffect, useState, useRef } from 'react';
 import { AiOutlineSearch, AiOutlineClose } from 'react-icons/ai';
 import Modal from 'react-modal';
 import Footer from '../../components/Footer';
@@ -9,8 +9,10 @@ import { foodReducer, goatReducer, maintenanceReducer } from '../../config/Reduc
 import { getAdmin, getAllFood, getAllGoat, getAllMaintenance, newTransaction } from '../../functions/Database';
 import { resetTourReady, setTourReady } from '../../functions/TourReady';
 import { useNavigate } from 'react-router-dom';
+import { useForkRef } from '@mui/material';
 
 const Investasi = () => {
+  const investButtonRef = useRef(null);
   const [goat, goatDispatch] = useReducer(goatReducer, []);
   const [food, foodDispatch] = useReducer(foodReducer, []);
   const [maintenance, maintenanceDispatch] = useReducer(maintenanceReducer, []);
@@ -82,74 +84,60 @@ const Investasi = () => {
 
   const renderGoat = () => {
     return (
-      <div className='flex flex-col items-center mb-10'>
+      <div className="flex flex-col items-center mb-10 px-4">
         {/* Search */}
-        <div className='flex flex-row w-1/3 border-2 border-[#5C5C5C] rounded-[10px] items-center self-center mb-11' >
-          <input type='text' placeholder='Cari Nama Ternak' onChange={(e) => setGoatSearch(e.target.value)} className='flex-1 text-sm text-[#333333] font-normal px-2 py-3 outline-none bg-transparent' />
-          <AiOutlineSearch size={32} color='#858585' className='mr-2 cursor-pointer' />
+        <div className="flex flex-row w-full max-w-md border-2 border-[#5C5C5C] rounded-[10px] items-center self-center mb-11 tour-goat-card">
+          <input
+            type="text"
+            placeholder="Cari Nama Ternak"
+            onChange={(e) => setGoatSearch(e.target.value)}
+            className="flex-1 text-sm text-[#333333] font-normal px-2 py-3 outline-none bg-transparent"
+          />
+          <AiOutlineSearch size={32} color="#858585" className="mr-2 cursor-pointer" />
         </div>
 
         {/* Sex Options */}
-        <div className='flex flex-row items-center self-center space-x-4 mb-14 tour-goat-filter' >
-          <button onClick={() => goatSex === 'Jantan' ? setGoatSex('') : setGoatSex('Jantan')} className={goatSex === 'Jantan' ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2' : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>Jantan</button>
-          <button onClick={() => goatSex === 'Betina' ? setGoatSex('') : setGoatSex('Betina')} className={goatSex === 'Betina' ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2' : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>Betina</button>
+        <div className="flex flex-row flex-wrap justify-center space-x-4 mb-14 tour-goat-filter">
+          <button
+            onClick={() => goatSex === 'Jantan' ? setGoatSex('') : setGoatSex('Jantan')}
+            className={goatSex === 'Jantan'
+              ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2'
+              : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>
+            Jantan
+          </button>
+          <button
+            onClick={() => goatSex === 'Betina' ? setGoatSex('') : setGoatSex('Betina')}
+            className={goatSex === 'Betina'
+              ? 'text-white text-sm font-medium bg-[#145412] border-2 rounded-full px-6 py-2'
+              : 'text-[#145412] text-sm font-medium border-[#145412] border-2 rounded-full px-6 py-2'}>
+            Betina
+          </button>
         </div>
 
-        {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-goat-card'>
+        {/* Cards */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 tour-goat-card">
           {
-            goat.filter(e => e.name.toLowerCase().includes(goatSearch.toLowerCase().trim()) && e.sex.toLowerCase().includes(goatSex.toLowerCase().trim())).map(element => (
-              <div onClick={() => setConfirmGoat(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
-                <div className={selectedGoat != null && selectedGoat.uid === element.uid ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]' : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'} />
-                <img src={element.image} alt='/' className='w-full' />
-                <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{element.name} {element.sex}</h4>
-                <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.type}</p>
-                <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.weight} kg / {element.time} bulan</p>
-                <p className='text-[#EA341B] text-base font-medium mx-2 overflow-hidden'>Rp. {element.price.toLocaleString().replaceAll(',', '.')}</p>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    );
-  }
-
-  const renderFood = () => {
-    return (
-      <div className='flex flex-col items-center mb-10'>
-
-        {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-food-card'>
-          {
-            food.map(element => (
-              <div onClick={() => setConfirmFood(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
-                <div className={selectedFood != null && selectedFood.uid === element.uid ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]' : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'} />
-                <img src={element.image} alt='/' className='w-full' />
-                <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{element.name}</h4>
-                <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.description}</p>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    );
-  }
-
-  const renderMaintenance = () => {
-    return (
-      <div className='flex flex-col items-center mb-10'>
-
-        {/* Options Menu */}
-        <div className='w-full h-fit grid grid-cols-4 lg:gap-12 md:gap-6 gap-4 tour-maintenance-card'>
-          {
-            maintenance
-              .filter(e => confirmMaintenance == null || e.uid !== confirmMaintenance.uid)
+            goat
+              .filter(e =>
+                e.name.toLowerCase().includes(goatSearch.toLowerCase().trim()) &&
+                e.sex.toLowerCase().includes(goatSex.toLowerCase().trim())
+              )
               .map(element => (
-                <div onClick={() => setConfirmMaintenance(element)} className='bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer'>
-                  <div className={selectedMaintenance != null && selectedMaintenance.uid === element.uid ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]' : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'} />
-                  <img src={element.image} alt='/' className='w-full' />
-                  <h4 className='font-bold text-[#000000CC] text-base mx-2 overflow-hidden'>{element.name}</h4>
-                  <p className='font-normal text-[#858585] text-sm mx-2 overflow-hidden'>{element.description}</p>
+                <div
+                  key={element.uid}
+                  onClick={() => setConfirmGoat(element)}
+                  className="bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer"
+                >
+                  <div className={
+                    selectedGoat?.uid === element.uid
+                      ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]'
+                      : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'
+                  } />
+                  <img src={element.image} alt={element.name} className="w-full" />
+                  <h4 className="font-bold text-[#000000CC] text-base mx-2 overflow-hidden">{element.name} {element.sex}</h4>
+                  <p className="font-normal text-[#858585] text-sm mx-2 overflow-hidden">{element.type}</p>
+                  <p className="font-normal text-[#858585] text-sm mx-2 overflow-hidden">{element.weight} kg / {element.time} bulan</p>
+                  <p className="text-[#EA341B] text-base font-medium mx-2 overflow-hidden">Rp. {element.price.toLocaleString().replaceAll(',', '.')}</p>
                 </div>
               ))
           }
@@ -157,6 +145,73 @@ const Investasi = () => {
       </div>
     );
   }
+
+
+  const renderFood = () => {
+    return (
+      <div className="flex flex-col items-center mb-10 px-4">
+        {/* Options Menu */}
+        <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 tour-food-card">
+          {
+            food.map(element => (
+              <div
+                key={element.uid}
+                onClick={() => setConfirmFood(element)}
+                className="bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer"
+              >
+                <div className={
+                  selectedFood?.uid === element.uid
+                    ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]'
+                    : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'
+                } />
+                <img src={element.image} alt={element.name} className="w-full" />
+                <h4 className="font-bold text-[#000000CC] text-base mx-2 overflow-hidden">{element.name}</h4>
+                <p className="font-normal text-[#858585] text-sm mx-2 overflow-hidden">{element.description}</p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    );
+  }
+
+
+  const renderMaintenance = () => {
+    return (
+      <div className="flex flex-col items-center mb-10 px-4">
+        {/* Options Menu */}
+        <div className="w-full h-fit grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 tour-maintenance-card">
+          {
+            maintenance
+              .filter(e => confirmMaintenance == null || e.uid !== confirmMaintenance.uid)
+              .map(element => (
+                <div
+                  key={element.uid}
+                  onClick={() => {
+                    setConfirmMaintenance(element);
+                    setTimeout(() => {
+                      investButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100); // delay kecil agar modal update dulu
+                  }}
+
+                  className="bg-white flex flex-col space-y-2 py-2 shadow-lg cursor-pointer"
+                >
+                  <div className={
+                    selectedMaintenance?.uid === element.uid
+                      ? 'mx-2 border-2 bg-[#145412] rounded-full w-[30px] h-[30px]'
+                      : 'mx-2 border-2 border-[#145412] rounded-full w-[30px] h-[30px]'
+                  } />
+                  <img src={element.image} alt={element.name} className="w-full" />
+                  <h4 className="font-bold text-[#000000CC] text-base mx-2 overflow-hidden">{element.name}</h4>
+                  <p className="font-normal text-[#858585] text-sm mx-2 overflow-hidden">{element.description}</p>
+                </div>
+              ))
+          }
+        </div>
+      </div>
+    );
+  };
+
 
   const doTransaction = async () => {
     try {
@@ -263,6 +318,7 @@ const Investasi = () => {
                 Kamu bisa memilih jenis ternak, jenis pakan, dan jenis perawatan di tabel ini
               </p>
               <button
+                ref={investButtonRef}
                 onClick={() => {
                   if (localStorage.getItem('uid') === null) {
                     setNoAccountModal(true);
