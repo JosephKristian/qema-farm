@@ -2,15 +2,35 @@ const tourSteps = {
     '/': [
         {
             selector: '.tour-navbar',
-            content: 'Ini adalah navigasi utama aplikasi Qema Farm.',
+            content: 'Mulai Tur Pandian.',
         },
         {
             selector: '.tour-dashboard',
-            content: 'Ini adalah panel utama yang akan menampilkan informasi penting di dashboard Anda',
+            content: 'Ini adalah panel utama yang akan menampilkan informasi penting di dashboard Anda.',
+        },
+        {
+            selector: '.tour-goat',
+            content: 'Klik di sini untuk melihat berbagai jenis ternak.',
+        },
+        {
+            selector: '.tour-food',
+            content: 'Klik di sini untuk melihat jenis pakan ternak.',
+        },
+        {
+            selector: '.tour-maintenance',
+            content: 'Klik di sini untuk melihat daftar perawatan ternak.',
+        },
+        {
+            selector: '.tour-chart',
+            content: 'Bagian ini menampilkan grafik harga jual ternak terkini.',
+        },
+        {
+            selector: '.tour-article',
+            content: 'Bagian artikel yang mengedukasi tentang pengelolaan limbah ternak.',
         },
         {
             selector: '.tour-login-button',
-            content: 'Mulailah dengan masuk ke akun Anda menggunakan tombol ini untuk mendapatkan pengalaman yang dipersonalisasi.',
+            content: 'Masuk dengan tombol ini untuk mulai berinvestasi dengan pengalaman yang dipersonalisasi.',
         },
     ],
 
