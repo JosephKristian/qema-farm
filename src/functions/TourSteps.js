@@ -28,6 +28,10 @@ const tourSteps = {
             selector: '.tour-article',
             content: 'Bagian artikel yang mengedukasi tentang pengelolaan limbah ternak.',
         },
+        {
+            selector: '.tour-login-button',
+            content: 'Mulailah dengan masuk ke akun Anda menggunakan tombol ini untuk mendapatkan pengalaman yang dipersonalisasi.',
+        },
     ],
 
     '/breeding': [

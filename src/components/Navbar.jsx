@@ -74,38 +74,42 @@ const Navbar = () => {
   const renderButton = () => {
     if (!localStorage.getItem('uid')) {
       return (
-        <div className="flex sm:space-x-4 space-x-2 mt-4 sm:mt-0">
-          <button
-            className="text-[#ADADAD] font-medium text-base sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
-            onClick={() => handleNavigate('/login')}
-          >
-            Login
-          </button>
-          <button
-            className="bg-[#145412] text-white font-medium text-base sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
-            onClick={() => handleNavigate('/register')}
-          >
-            Daftar
-          </button>
-        </div>
+        <>
+          <div className="flex sm:space-x-4 space-x-2 mt-4 sm:mt-0 tour-login-button">
+            <button
+              className="text-[#ADADAD] font-medium text-base sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
+              onClick={() => handleNavigate('/login')}
+            >
+              Login
+            </button>
+            <button
+              className="bg-[#145412] text-white font-medium text-base sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
+              onClick={() => handleNavigate('/register')}
+            >
+              Daftar
+            </button>
+          </div>
+        </>
       );
     }
 
     return (
-      <div className="flex sm:space-x-4 space-x-2 mt-4 sm:mt-0">
-        <button
-          onClick={() => handleNavigate('/profil')}
-          className="py-2 px-4 sm:px-8 text-[#ADADAD] text-sm sm:text-lg"
-        >
-          Halo, <span className="text-[#145412]">{userName.split(' ')[0]}</span>
-        </button>
-        <button
-          className="bg-[#EA341B] text-white font-medium text-sm sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
-          onClick={() => setVisibleModal(true)}
-        >
-          Keluar
-        </button>
-      </div>
+      <>
+        <div className="flex sm:space-x-4 space-x-2 mt-4 sm:mt-0">
+          <button
+            onClick={() => handleNavigate('/profil')}
+            className="py-2 px-4 sm:px-8 text-[#ADADAD] text-sm sm:text-lg"
+          >
+            Halo, <span className="text-[#145412]">{userName.split(' ')[0]}</span>
+          </button>
+          <button
+            className="bg-[#EA341B] text-white font-medium text-sm sm:text-lg py-2 px-4 sm:px-8 rounded-lg"
+            onClick={() => setVisibleModal(true)}
+          >
+            Keluar
+          </button>
+        </div>
+      </>
     );
   };
 
@@ -139,7 +143,7 @@ const Navbar = () => {
 
         <ul
           className={`${isMenuOpen ? 'flex' : 'hidden'
-            } sm:flex flex-col sm:flex-row absolute sm:static top-[90px] left-0 w-full sm:w-auto bg-[#FCFCFC] sm:bg-transparent z-40 sm:z-auto px-4 sm:px-0 py-4 sm:py-0 space-y-4 sm:space-y-0 sm:space-x-8`}
+            } sm:flex flex-col sm:flex-row absolute sm:static top-[90px] left-0 w-full sm:w-auto bg-[#FCFCFC] sm:bg-transparent z-40 sm:z-auto px-4 sm:px-0 py-4 sm:py-0 space-y-4 sm:space-y-0 sm:space-x-8 `}
         >
           <li
             className={`font-semibold text-base sm:text-lg cursor-pointer ${path.includes('/investasi') ? 'text-[#218A1F]' : 'text-[#ADADAD]'
@@ -241,10 +245,9 @@ const Navbar = () => {
             )}
           </li>
 
-          <li className="sm:hidden">{renderButton()}</li>
         </ul>
 
-        <div className="hidden sm:block">{renderButton()}</div>
+        <div className="tour-login-button">{renderButton()}</div>
       </div>
 
       <Modal
