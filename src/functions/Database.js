@@ -269,6 +269,8 @@ export const newTransaction = (theGoat, theFood, theMaintenance, uid) => {
 
 export const saveWeight = async (transactionId, weight) => {
   try {
+    console.log('transactionId', transactionId);
+    console.log('weight', weight);
     await update(ref(database, `${transactionsRef}/${transactionId}`), {
       weight: parseFloat(weight),
       updated_at: new Date().getTime(), // jika ingin update timestamp juga

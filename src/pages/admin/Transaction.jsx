@@ -182,6 +182,11 @@ const Transaction = () => {
                           type="number"
                           placeholder="Berat (kg)"
                           className="border border-gray-300 rounded px-2 py-1 text-xs w-16"
+                          onChange={(e) => {
+                            const updatedWeights = [...weights];
+                            updatedWeights[index] = e.target.value;
+                            setWeights(updatedWeights);
+                          }}
                         />
 
                         <button
