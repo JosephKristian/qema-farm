@@ -116,62 +116,68 @@ const Profile = () => {
       <div className='w-full h-[264px] bg-[#CAAA02] rounded-b-[30px]'></div>
 
       {/* Form & Profile Info Panel */}
-      <div className='w-full lg:px-16 md:px-10 px-6 flex flex-row justify-between items-start space-x-8 mb-14'>
+      <div className='w-full lg:px-16 md:px-10 px-6 flex flex-col lg:flex-row justify-between items-start lg:space-x-8 space-y-12 lg:space-y-0 mb-14'>
+
         {/* Info Panel */}
-        <div className='flex-1 flex flex-col items-center mt-[-80px]'>
-          <div className='flex flex-col items-start space-y-4'>
-            <img src={userAvatar.length < 1 ? NoAvatar : userAvatar} alt='/' onClick={() => imageRef.current.click()} className='bg-white rounded-full w-[160px] h-[160px] cursor-pointer' />
+        <div className='w-full lg:w-1/2 flex flex-col items-center mt-[-80px] tour-profile-info'>
+          <div className='flex flex-col items-center space-y-4'>
+            <img src={userAvatar.length < 1 ? NoAvatar : userAvatar} alt='/' onClick={() => imageRef.current.click()} className='bg-white rounded-full w-[120px] h-[120px] lg:w-[160px] lg:h-[160px] cursor-pointer' />
             <input type='file' ref={imageRef} multiple={false} onChange={(e) => {
-              if (e.target.files && e.target.files[0] && e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/jpg' || e.target.files[0].type === 'image/png') {
+              if (e.target.files && e.target.files[0] && ['image/jpeg', 'image/jpg', 'image/png'].includes(e.target.files[0].type)) {
                 updateAvatar(e.target.files[0]);
               }
             }} className='hidden' />
-            <p className='text-black text-[26px] font-normal text-center'>{localStorage.getItem('name')}</p>
-            <p className='text-[#333333] text-xl font-normal text-center'>{localStorage.getItem('email')}</p>
-            <p className='text-[#333333] text-xl font-normal text-center'>{localStorage.getItem('phone')}</p>
-            <div>
-              {/* <button onClick={() => updateAvatar()} className='bg-[#145412] text-white text-sm font-medium px-4 py-3 rounded-tl-xl rounded-br-xl'>Ubah</button> */}
-            </div>
+            <p className='text-black text-[22px] lg:text-[26px] font-normal text-center'>{localStorage.getItem('name')}</p>
+            <p className='text-[#333333] text-base lg:text-xl font-normal text-center'>{localStorage.getItem('email')}</p>
+            <p className='text-[#333333] text-base lg:text-xl font-normal text-center'>{localStorage.getItem('phone')}</p>
           </div>
         </div>
+
         {/* Form Panel */}
-        <div className='flex-1 flex items-center justify-center'>
-          <div className='bg-[#D6F6D5] w-[80%] flex flex-col space-y-10 rounded-[20px] mt-14 py-6 px-4'>
-            <h4 className='text-black text-center text-2xl font-medium'>Ubah Profil</h4>
+        <div className='w-full lg:w-1/2 flex items-center justify-center tour-profile-edit'>
+          <div className='bg-[#D6F6D5] w-full lg:w-[80%] flex flex-col space-y-10 rounded-[20px] mt-0 lg:mt-14 py-6 px-4'>
+            <h4 className='text-black text-center text-xl lg:text-2xl font-medium'>Ubah Profil</h4>
+
             {/* Nama */}
-            <div className='flex flex-col items-start space-y-6 border-b-2 border-b-[#31D12E]'>
-              <p className='text-[#333333] text-lg font-medium'>NAMA</p>
-              <input type='text' placeholder='Nama Anda' defaultValue={userName} onClick={(e) => setUserName(e.target.value)} className='w-full pb-1 pt-2 flex-1 border-none text-base outline-none text-[#333333] bg-transparent' />
+            <div className='flex flex-col items-start space-y-2 border-b-2 border-b-[#31D12E]'>
+              <p className='text-[#333333] text-base lg:text-lg font-medium'>NAMA</p>
+              <input type='text' placeholder='Nama Anda' defaultValue={userName} onChange={(e) => setUserName(e.target.value)} className='w-full pb-1 pt-2 border-none text-base outline-none text-[#333333] bg-transparent' />
             </div>
+
             {/* Email */}
-            <div className='flex flex-col items-start space-y-6 border-b-2 border-b-[#31D12E]'>
-              <p className='text-[#333333] text-lg font-medium'>EMAIL (*tidak dapat diubah)</p>
-              <input type='email' readOnly placeholder='Email Anda' defaultValue={userEmail} onClick={(e) => setUserEmail(e.target.value)} className='w-full pb-1 pt-2 flex-1 border-none text-base outline-none text-[#333333] bg-transparent' />
+            <div className='flex flex-col items-start space-y-2 border-b-2 border-b-[#31D12E]'>
+              <p className='text-[#333333] text-base lg:text-lg font-medium'>EMAIL (*tidak dapat diubah)</p>
+              <input type='email' readOnly placeholder='Email Anda' defaultValue={userEmail} className='w-full pb-1 pt-2 border-none text-base outline-none text-[#333333] bg-transparent' />
             </div>
+
             {/* Whatsapp */}
-            <div className='flex flex-col items-start space-y-6 border-b-2 border-b-[#31D12E]'>
-              <p className='text-[#333333] text-lg font-medium'>NO. WHATSAPP</p>
-              <input type='tel' placeholder='No. Whatsapp Anda (08xxxxxxxxxx)' defaultValue={userPhone} onClick={(e) => setUserPhone(e.target.value)} className='w-full pb-1 pt-2 flex-1 border-none text-base outline-none text-[#333333] bg-transparent' />
+            <div className='flex flex-col items-start space-y-2 border-b-2 border-b-[#31D12E]'>
+              <p className='text-[#333333] text-base lg:text-lg font-medium'>NO. WHATSAPP</p>
+              <input type='tel' placeholder='No. Whatsapp Anda' defaultValue={userPhone} onChange={(e) => setUserPhone(e.target.value)} className='w-full pb-1 pt-2 border-none text-base outline-none text-[#333333] bg-transparent' />
             </div>
+
             {/* Kata Sandi */}
-            <div className='flex flex-col items-start space-y-6 border-b-2 border-b-[#31D12E]'>
-              <p className='text-[#333333] text-lg font-medium'>KATA SANDI</p>
+            <div className='flex flex-col items-start space-y-2 border-b-2 border-b-[#31D12E]'>
+              <p className='text-[#333333] text-base lg:text-lg font-medium'>KATA SANDI</p>
               <div className='w-full flex items-start'>
-                <input type={visible ? 'text' : 'password'} placeholder='Kata Sandi' defaultValue={userPassword} onClick={(e) => setUserPassword(e.target.value)} className='w-full pb-1 pt-2 flex-1 border-none text-base outline-none text-[#333333] bg-transparent' />
+                <input type={visible ? 'text' : 'password'} placeholder='Kata Sandi' defaultValue={userPassword} onChange={(e) => setUserPassword(e.target.value)} className='w-full pb-1 pt-2 border-none text-base outline-none text-[#333333] bg-transparent' />
                 {
-                  !visible
-                    ? <AiOutlineEyeInvisible color='#31D12E' size={48} className='p-2 cursor-pointer' onClick={() => setVisible(!visible)} />
-                    : <AiOutlineEye color='#31D12E' size={48} className='p-2 cursor-pointer' onClick={() => setVisible(!visible)} />
+                  visible
+                    ? <AiOutlineEye color='#31D12E' size={32} className='p-1 cursor-pointer' onClick={() => setVisible(!visible)} />
+                    : <AiOutlineEyeInvisible color='#31D12E' size={32} className='p-1 cursor-pointer' onClick={() => setVisible(!visible)} />
                 }
               </div>
             </div>
+
             {/* Button */}
             <div className='text-center'>
               <button onClick={() => updateUserProfile()} className='bg-[#145412BF] text-white text-sm font-medium px-4 py-3 rounded-tl-xl rounded-br-xl'>Perbarui</button>
             </div>
           </div>
         </div>
+
       </div>
+
 
       {/* Footer */}
       <Footer />

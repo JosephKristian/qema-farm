@@ -2,7 +2,7 @@ const tourSteps = {
     '/': [
         {
             selector: '.tour-navbar',
-            content: 'Mulai Tur Pandian.',
+            content: 'Mulai Tur Panduan.',
         },
         {
             selector: '.tour-dashboard',
