@@ -51,7 +51,7 @@ const HomeAdmin = () => {
 
       <div className="flex flex-col flex-1">
 
-        <main className="p-6 bg-gray-100">
+        <main className="p-6 bg-gray-100 pt-20">
           <h1 className="text-2xl font-semibold mb-6">Dasbor</h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
