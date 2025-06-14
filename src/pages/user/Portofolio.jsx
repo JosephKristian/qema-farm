@@ -13,6 +13,7 @@ import Decoration2 from '../../assets/decoration-box-2.png';
 import NoPortofolio from '../../assets/no_portofolio.png';
 import { getAllGoat, getAllPackageTransaction, getAllTransaction } from '../../functions/Database';
 import { setTourReady } from '../../functions/TourReady';
+import { Bar, BarChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 // Format angka
 const numberFormatter = new Intl.NumberFormat('id-ID', {
@@ -198,11 +199,54 @@ const Portofolio = () => {
     },
   ];
 
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { kode, confirmed_at } = payload[0].payload;
+      const isValidDate = confirmed_at && !isNaN(new Date(confirmed_at));
+
+      return (
+        <div className="bg-white p-3 border border-gray-300 rounded shadow text-xs">
+          <p className="font-semibold text-gray-700 mb-1">Kode: {kode}</p>
+          <p className="font-semibold text-gray-700">Tanggal Konfirmasi:</p>
+          <p className="text-gray-600">
+            {isValidDate
+              ? new Date(confirmed_at).toLocaleString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })
+              : 'Belum dikonfirmasi'}
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+
+  const formattedData = userTransactions.map((trx, idx) => ({
+    kode: trx.goat?.code || `${trx.goat?.name}-${trx.goat?.type}-${trx.uid}`,
+    beratAwal: trx.goat?.weight || 0,
+    beratTerkini: trx.weight || 0,
+    confirmed_at: trx.confirmed_at || null,
+  }));
+
+  const formattedDataTrx = userPackageTransactions.map((trx, idx) => ({
+    kode: trx.name || `Paket-${idx + 1}`,
+    beratAwal: trx.goat?.weight || 0,
+    beratTerkini: trx.weight || 0,
+    confirmed_at: trx.confirmed_at || null,
+  }));
+
+
+
   return (
     <div>
       <Navbar />
 
-      
+
       {/* Tombol Mengambang Panduan */}
       <button
         onClick={() => {
@@ -321,124 +365,49 @@ const Portofolio = () => {
       </div>
 
 
-
-      {/* Tabel Detail Kepemilikan Kambing */}
-      {uid && (
-        <div className="mt-16 tour-portofolio-table-ternak">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Kepemilikan Ternak</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4 border">No</th>
-                  <th className="py-2 px-4 border">Kode Ternak</th>
-                  <th className="py-2 px-4 border">Berat Awal (kg)</th>
-                  <th className="py-2 px-4 border">Berat Terkini (kg)</th>
-                  <th className="py-2 px-4 border">Harga Investasi</th>
-                  <th className="py-2 px-4 border">Tanggal Dibuat</th>       {/* Kolom baru */}
-                  <th className="py-2 px-4 border">Tanggal Konfirmasi</th>  {/* Kolom baru */}
-                </tr>
-              </thead>
-              <tbody>
-                {userTransactions.map((trx, idx) => (
-                  <tr key={idx} className="text-center">
-                    <td className="py-2 px-4 border">{idx + 1}</td>
-                    <td className="py-2 px-4 border">{trx.goat?.code || `${trx.goat?.livestockTypes}-${trx.goat?.name}-${trx.goat?.type}-${uid?.slice(0, 4).toUpperCase()}${trx.uid}`}</td>
-                    <td className="py-2 px-4 border">{trx.goat?.weight ? `${trx.goat.weight} kg` : '-'}</td>
-                    <td className="py-2 px-4 border">{trx.weight ? `${trx.weight} kg` : '-'}</td>
-                    <td className="py-2 px-4 border">
-                      Rp. {numberFormatter.format(trx.goat?.price || 0).replaceAll(',', '.')}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {trx.created_at
-                        ? new Date(trx.created_at).toLocaleString('id-ID', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                        : '-'}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {trx.confirmed_at
-                        ? new Date(trx.confirmed_at).toLocaleString('id-ID', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                        : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* Card Perbandingan Berat Ternak */}
+      <div className="mt-16 bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Perbandingan Berat Ternak</h2>
+        <div className="w-full h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={formattedData} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
+              <XAxis
+                dataKey="kode"
+                angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80}
+                tickFormatter={(str) =>
+                  str.length > 20 ? str.slice(0, 17) + '...' : str
+                }
+              />
+              <YAxis label={{ value: 'Berat (kg)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              <Bar dataKey="beratAwal" fill="#87CEEB" name="Berat Awal (kg)" />
+              <Bar dataKey="beratTerkini" fill="#FFA500" name="Berat Terkini (kg)" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-      )}
+      </div>
 
-      {/* Tabel Detail Transaksi Paket oleh User */}
-      {uid && (
-        <div className="mt-16 tour-portofolio-table-paket">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Detail Transaksi Paket</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-300 rounded-md text-sm sm:text-base">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="py-2 px-4 border">No</th>
-                  <th className="py-2 px-4 border">Kode Paket</th>
-                  <th className="py-2 px-4 border">Berat Awal (kg)</th>
-                  <th className="py-2 px-4 border">Berat Terkini (kg)</th>
-                  <th className="py-2 px-4 border">Harga</th>
-                  <th className="py-2 px-4 border">Tanggal Dibuat</th>
-                  <th className="py-2 px-4 border">Tanggal Konfirmasi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {userPackageTransactions.map((trx, idx) => (
-                  <tr key={idx} className="text-center">
-                    <td className="py-2 px-4 border">{idx + 1}</td>
-                    <td className="py-2 px-4 border">{trx.name}{trx.uid || trx.key}</td>
-                    <td className="py-2 px-4 border">
-                      {trx.goat?.weight ? `${trx.goat?.weight} kg` : '-'}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {trx.weight ? `${trx.weight} kg` : '-'}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {numberFormatter.format(trx.discount_price ?? trx.price).replaceAll(',', '.')}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {trx.created_at
-                        ? new Date(trx.created_at).toLocaleString('id-ID', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                        : '-'}
-                    </td>
-                    <td className="py-2 px-4 border">
-                      {trx.confirmed_at
-                        ? new Date(trx.confirmed_at).toLocaleString('id-ID', {
-                          day: '2-digit',
-                          month: 'short',
-                          year: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })
-                        : '-'}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+      {/* Card Transaksi Paket */}
+      <div className="mt-16 bg-white p-6 rounded-lg shadow-md">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Transaksi Paket</h2>
+        <div className="w-full h-96">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={formattedDataTrx} margin={{ top: 20, right: 30, left: 0, bottom: 60 }}>
+              <XAxis dataKey="kode" angle={-30} textAnchor="end" interval={0} />
+              <YAxis label={{ value: 'Berat (kg)', angle: -90, position: 'insideLeft' }} />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+              <Bar dataKey="beratAwal" fill="#87CEEB" name="Berat Awal (kg)" />
+              <Bar dataKey="beratTerkini" fill="#FFA500" name="Berat Terkini (kg)" />
+            </BarChart>
+          </ResponsiveContainer>
         </div>
-      )}
+      </div>
+
 
 
 
