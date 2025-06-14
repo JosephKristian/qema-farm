@@ -4,7 +4,7 @@ import Modal from 'react-modal';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import { checkSimilarEmail, getUserData } from '../functions/Database';
-import { loginUsers } from '../functions/Auth';
+import { forgotPassword, loginUsers } from '../functions/Auth';
 import Loading from '../components/Loading';
 
 const Login = () => {
@@ -32,12 +32,29 @@ const Login = () => {
     setVisibleModal(true);
   }
 
+  const handleForgotPassword = async () => {
+    if (!email) {
+      elementEmail.current.focus();
+      return showTheModal('Email Diperlukan', 'Silakan isi email terlebih dahulu untuk reset kata sandi.');
+    }
+
+    try {
+      setLoading(true);
+      await forgotPassword(email);
+      showTheModal('Berhasil', 'Kami telah mengirimkan link reset kata sandi ke email Anda.');
+    } catch (error) {
+      showTheModal('Gagal Reset Password', error.message || 'Terjadi kesalahan saat mengirim email reset.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const doProcessLogin = async () => {
     try {
       if (doValidation()) {
         setLoading(true);
         await checkSimilarEmail(email).then(
-          (resolve) => {},
+          (resolve) => { },
           (reject) => { console.log(reject); throw Error(reject) },
         );
         await loginUsers(email, password).then(
@@ -67,7 +84,7 @@ const Login = () => {
           localStorage.setItem('role', resolve.role);
           localStorage.setItem('avatar', resolve.avatar);
           navigate('/', { replace: true });
-         },
+        },
         (reject) => { throw Error(reject); },
       );
     } catch (error) {
@@ -128,6 +145,9 @@ const Login = () => {
                   : <AiOutlineEye color='#31D12E' size={48} className='p-2 cursor-pointer' onClick={() => setVisible(!visible)} />
               }
             </div>
+            <p className='text-sm text-[#145412] font-medium cursor-pointer text-right' onClick={handleForgotPassword}>
+              Lupa kata sandi?
+            </p>
           </div>
 
           {/* Button and Navigate */}

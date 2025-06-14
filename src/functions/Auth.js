@@ -1,6 +1,7 @@
 import { auth } from '../config/FirebaseConfig';
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signOut,
   updatePassword
@@ -45,10 +46,23 @@ export const changePass = (password) => {
           reject(error);
         });
       },
-      (reject) => {throw reject}
+      (reject) => { throw reject }
     );
   });
 }
+
+export const forgotPassword = (email) => {
+  return new Promise((resolve, reject) => {
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        resolve('Link reset password berhasil dikirim ke email Anda.');
+      })
+      .catch((error) => {
+        console.log(error);
+        reject(error);
+      });
+  });
+};
 
 // Check Auth
 export const checkAuthState = () => {
