@@ -289,6 +289,16 @@ const Investasi = () => {
       {/* Navbar */}
       <Navbar />
 
+      <button
+        onClick={() => {
+          window.startTour(undefined, true)
+        }}
+        className="fixed bottom-6 right-6 z-50 bg-[#145412] text-white px-4 py-3 rounded-full shadow-lg flex items-center space-x-2 hover:bg-green-700 transition duration-300"
+      >
+        <span className="text-lg font-semibold">?</span>
+        <span className="hidden sm:inline">Panduan</span>
+      </button>
+
       {/* Top Panel */}
       <div className="bg-investasi w-full h-[575px] overflow-hidden flex mb-12">
         <div className='flex-1 flex flex-col items-center justify-between bg-[#47474778]'>

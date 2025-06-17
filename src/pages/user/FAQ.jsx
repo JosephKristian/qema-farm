@@ -13,7 +13,7 @@ import Footer from '../../components/Footer';
 
 const faqs = [
   {
-    question: 'Apa itu aplikasi ini?',
+    question: 'Apa itu Qema Farm?',
     answer:
       'Aplikasi ini adalah platform monitoring investasi peternakan kambing yang membantu pengguna dalam mengelola dan memantau investasi mereka secara real-time.',
   },

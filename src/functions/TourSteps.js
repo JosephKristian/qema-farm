@@ -40,16 +40,12 @@ const tourSteps = {
             content: 'Selamat datang di halaman Breeding QEMA FARM! Di sini Anda dapat memilih paket breeding terbaik untuk kambing Anda.',
         },
         {
-            selector: '.tour-breeding-description',
-            content: 'Inilah penjelasan singkat tentang layanan breeding QEMA FARM. Kami memberikan jasa breeding bersama perawatan, monitoring, dan edukasi langsung di peternakan.',
-        },
-        {
             selector: '.tour-breeding-chosen',
             content: 'Di sini akan muncul detail paket breeding yang Anda pilih. Jika belum ada, silakan pilih salah satu opsi di bawah.',
         },
         {
             selector: '.tour-breeding-benefit',
-            content: 'Berikut adalah manfaat utama menggunakan layanan breeding kami: jasa breeding, perawatan berkala, akses CCTV, dan pengalaman langsung dari ahli.',
+            content: 'Berikut adalah yang akan kamu akan dapatkan pada layanan kami.',
         },
         {
             selector: '.tour-breeding-options',
@@ -166,11 +162,11 @@ const tourSteps = {
         },
         {
             selector: '.tour-portofolio-table-ternak',
-            content: 'Tabel detail kepemilikan ternak milikmu, termasuk berat awal dan terkini.',
+            content: 'Detail kepemlikan ternak milikmu, termasuk berat badan awal dan terkini.',
         },
         {
             selector: '.tour-portofolio-table-paket',
-            content: 'Tabel transaksi paket yang telah kamu lakukan, termasuk informasi harga dan waktu.',
+            content: 'Detail transaksi paket yang kamu punya, termasuk berat badan awal dan terkini” dan letak nya di letakan di grafik nya di bawah di pasin di grafik transaksi paket.',
         },
     ],
 
